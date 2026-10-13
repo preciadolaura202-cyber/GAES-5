@@ -663,11 +663,22 @@ body {
   color: var(--text-secondary);
   text-decoration: underline;
   text-underline-offset: 3px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: var(--font-display);
+  cursor: pointer;
   transition: color var(--transition-tactile);
 }
 
 .forgot-link:hover {
   color: var(--signal-yellow);
+}
+
+.forgot-link:focus-visible {
+  outline: 2px solid var(--signal-yellow);
+  outline-offset: 4px;
+  border-radius: var(--radius-xs);
 }
 
 /* --------------------------------------------------------------------------
@@ -1032,6 +1043,196 @@ dialog.custom-modal::backdrop {
 
 .btn-emergency-dispatch:hover {
   background: #DC2626;
+}
+
+/* --------------------------------------------------------------------------
+   RECOVERY (OLVIDÉ MI CLAVE) & CIVIC ID (GOOGLE) MODALS
+   -------------------------------------------------------------------------- */
+.modal-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+
+.modal-footnote {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 18px 0 0;
+}
+
+.recover-method-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.recover-method-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-tactile);
+}
+
+.recover-method-btn:hover {
+  border-color: var(--border-bright);
+  color: var(--text-primary);
+}
+
+.recover-method-btn.active {
+  border-color: var(--radar-cyan);
+  background: rgba(0, 229, 255, 0.08);
+  color: var(--radar-cyan);
+  box-shadow: 0 0 0 1px var(--radar-cyan);
+}
+
+.recover-field-group {
+  margin-bottom: 18px;
+}
+
+.otp-input {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+}
+
+.recover-resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.btn-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--radar-cyan);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color var(--transition-tactile);
+}
+
+.btn-link:hover {
+  color: var(--signal-yellow);
+}
+
+.btn-link:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.google-account-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.google-account-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-tactile);
+}
+
+.google-account-item:hover {
+  border-color: var(--border-bright);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.google-account-item:focus-visible {
+  outline: 2px solid var(--signal-yellow);
+  outline-offset: 2px;
+}
+
+.google-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.google-avatar.c-cyan { background: #38BDF8; }
+.google-avatar.c-emerald { background: #34D399; }
+.google-avatar.c-amber { background: #FBBF24; }
+.google-avatar.c-rose { background: #FB7185; }
+.google-avatar.c-violet { background: #A78BFA; }
+
+.google-account-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.google-account-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.google-account-email {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.google-account-item .google-g-svg {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.google-other-account {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.google-other-account .text-input {
+  flex: 1;
 }
 
 /* --------------------------------------------------------------------------

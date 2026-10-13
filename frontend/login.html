@@ -203,7 +203,7 @@
                 <span>Recordar este nodo seguro</span>
               </label>
 
-              <a href="#recuperar-clave" class="forgot-link" title="Restablecer clave de acceso">¿Olvidaste tu clave?</a>
+              <button type="button" id="forgotLink" class="forgot-link" title="Restablecer clave de acceso">¿Olvidaste tu clave?</button>
             </div>
 
             <!-- Botón Principal de Envío -->
@@ -351,6 +351,155 @@
           <span>Transmitir Alerta a la Red C5</span>
         </button>
       </form>
+    </div>
+  </dialog>
+
+  <!-- Diálogo Modal: Recuperar Clave de Acceso (Correo / SMS) -->
+  <dialog id="recoverModal" class="custom-modal" aria-labelledby="recoverHeading">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="recoverHeading">Recuperar Clave de Acceso</h2>
+        <button type="button" id="closeRecoverBtn" class="btn-close-modal" aria-label="Cerrar ventana de recuperación">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Paso 1: Elegir canal y enviar código -->
+      <div id="recoverStep1" class="recover-step">
+        <p class="modal-desc">Elige el canal donde deseas recibir el código de verificación. Lo transmitiremos de inmediato a tu correo o teléfono registrado en la red.</p>
+
+        <div class="recover-method-tabs" role="group" aria-label="Método de recuperación">
+          <button type="button" id="recoverMethodEmail" class="recover-method-btn active" data-method="email" aria-pressed="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>Correo electrónico</span>
+          </button>
+          <button type="button" id="recoverMethodPhone" class="recover-method-btn" data-method="phone" aria-pressed="false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>Teléfono (SMS)</span>
+          </button>
+        </div>
+
+        <div class="field-group recover-field-group">
+          <div class="field-label-row">
+            <label for="recoverContactInput" class="field-label" id="recoverContactLabel">Correo electrónico registrado</label>
+            <span class="field-hint" id="recoverContactHint">CANAL.SEGURO</span>
+          </div>
+          <div class="input-container">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </span>
+            <input type="email" id="recoverContactInput" name="recoverContact" class="text-input" placeholder="ej. vecino@colonia.org" autocomplete="email" spellcheck="false" aria-labelledby="recoverContactLabel">
+          </div>
+        </div>
+
+        <div id="recoverStatus" class="form-status-banner info" role="status" aria-live="polite" hidden></div>
+
+        <button type="button" id="sendCodeBtn" class="btn-submit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 2 11 13"></path>
+            <path d="M22 2 15 22l-4-9-9-4 20-7z"></path>
+          </svg>
+          <span class="btn-text">Enviar código de verificación</span>
+        </button>
+      </div>
+
+      <!-- Paso 2: Verificar código y restablecer clave -->
+      <div id="recoverStep2" class="recover-step" hidden>
+        <p class="modal-desc" id="recoverSentTo"></p>
+
+        <div class="field-group recover-field-group">
+          <div class="field-label-row">
+            <label for="recoverCodeInput" class="field-label">Código de verificación</label>
+            <span class="field-hint" id="recoverCodeHint"></span>
+          </div>
+          <input type="text" id="recoverCodeInput" class="text-input otp-input" inputmode="numeric" maxlength="6" placeholder="· · · · · ·" autocomplete="one-time-code" spellcheck="false" aria-labelledby="recoverCodeHint">
+        </div>
+
+        <div class="field-group recover-field-group">
+          <div class="field-label-row">
+            <label for="newPasswordInput" class="field-label">Nueva clave de acceso</label>
+            <span class="field-hint">6+ CARACTERES</span>
+          </div>
+          <div class="input-container">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </span>
+            <input type="password" id="newPasswordInput" class="text-input" placeholder="Nueva clave segura" autocomplete="new-password">
+          </div>
+        </div>
+
+        <div class="field-group recover-field-group">
+          <div class="field-label-row">
+            <label for="confirmPasswordInput" class="field-label">Confirmar nueva clave</label>
+            <span class="field-hint">VERIFICACIÓN</span>
+          </div>
+          <div class="input-container">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </span>
+            <input type="password" id="confirmPasswordInput" class="text-input" placeholder="Repite tu nueva clave" autocomplete="new-password">
+          </div>
+        </div>
+
+        <div id="recoverStep2Status" class="form-status-banner info" role="status" aria-live="polite" hidden></div>
+
+        <button type="button" id="recoverConfirmBtn" class="btn-submit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span class="btn-text">Restablecer y volver a iniciar sesión</span>
+        </button>
+
+        <div class="recover-resend-row">
+          <span class="field-hint" id="resendTimerText"></span>
+          <button type="button" id="resendCodeBtn" class="btn-link">Reenviar código</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Diálogo Modal: Identidad Digital / Google -->
+  <dialog id="civicIdModal" class="custom-modal" aria-labelledby="civicIdHeading">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="civicIdHeading">Ingresa con tu Identidad Digital</h2>
+        <button type="button" id="closeCivicIdBtn" class="btn-close-modal" aria-label="Cerrar ventana de identidad digital">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <p class="modal-desc">Autoriza el acceso con tu cuenta de Google para que SegurIA valide tu identidad de forma rápida y segura.</p>
+
+      <div class="google-account-grid" id="googleAccountGrid"></div>
+
+      <div class="google-other-account" id="googleOtherAccount">
+        <input type="email" id="googleOtherEmail" class="text-input" placeholder="Escribe otra cuenta de Google" autocomplete="email" spellcheck="false" aria-label="Otra cuenta de Google">
+        <button type="button" id="googleOtherContinue" class="btn-link">Continuar</button>
+      </div>
+
+      <div id="civicIdStatus" class="form-status-banner info" role="status" aria-live="polite" hidden></div>
+
+      <p class="modal-footnote">Al continuar, Google compartirá tu nombre, correo y foto de perfil con SegurIA. Nunca compartirás tu contraseña de Google.</p>
     </div>
   </dialog>
 

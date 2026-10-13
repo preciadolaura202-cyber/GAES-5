@@ -28,8 +28,8 @@ El proyecto se construyó siguiendo el plan de trabajo del curso, por etapas:
 - Se definió el **MVP** y la **feature clave**: reportes ciudadanos en tiempo real con reseñas geolocalizadas.
 
 ### 2. Diseño de producto y experiencia (Frontend)
-- Definición del producto en `log in/readme.md`: propósito, usuarios, capacidades y restricciones.
-- Design system completo en `log in/DESIGN.md`: paleta (obsidiana + señalética táctica), tipografía (Archivo / Chivo Mono), layout en tres estratos, reglas de accesibilidad WCAG 2.1 AA y componentes.
+- Definición del producto en `frontend/readme.md`: propósito, usuarios, capacidades y restricciones.
+- Design system completo en `frontend/DESIGN.md`: paleta (obsidiana + señalética táctica), tipografía (Archivo / Chivo Mono), layout en tres estratos, reglas de accesibilidad WCAG 2.1 AA y componentes.
 - Interfaz de login como "consola situacional": mapa táctico en canvas con radar, medidor de entropía de contraseña, modal biométrico y despacho de emergencia.
 - Stack frontend: **HTML5 semántico + CSS3 moderno + TypeScript** (compilado a `dist/`), sin dependencias externas.
 
@@ -73,7 +73,7 @@ GAES-5-main/
 │   │       └── categorias.js # listado de categorías
 │   ├── .env.example
 │   └── package.json
-├── log in/                   # Frontend (interfaz de acceso)
+├── frontend/                 # Frontend (interfaz de acceso)
 │   ├── login.html            # Página principal
 │   ├── styles.css
 │   ├── src/app.ts            # Lógica en TypeScript
@@ -108,9 +108,9 @@ npm run dev            # o: npm start
 La API quedará en `http://localhost:3000` (prueba: `http://localhost:3000/health`).
 
 ### 3. Frontend
-Abrir `log in/login.html` en el navegador, o servirlo con cualquier servidor estático:
+Abrir `frontend/login.html` en el navegador, o servirlo con cualquier servidor estático:
 ```bash
-cd "log in"
+cd frontend
 npx serve .
 ```
 
@@ -124,6 +124,8 @@ npx serve .
 | GET | `/api/categorias` | Lista de categorías | No |
 | POST | `/api/auth/register` | Registro de usuario | No |
 | POST | `/api/auth/login` | Inicio de sesión (devuelve JWT) | No |
+| POST | `/api/auth/recover` | Envía código de recuperación al correo | No |
+| POST | `/api/auth/recover/verify` | Verifica código y restablece la clave | No |
 | GET | `/api/auth/me` | Datos del usuario logueado | Sí (Bearer) |
 
 **Ejemplo de login:**

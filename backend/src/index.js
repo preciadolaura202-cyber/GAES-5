@@ -31,6 +31,7 @@ app.listen(PORT, async () => {
   console.log(`Categorías: http://localhost:${PORT}/api/categorias`);
   console.log(`Registro: POST http://localhost:${PORT}/api/auth/register`);
   console.log(`Login: POST http://localhost:${PORT}/api/auth/login`);
+  console.log(`Recuperar clave: POST http://localhost:${PORT}/api/auth/recover`);
   await checkDatabaseConnection();
 });
 

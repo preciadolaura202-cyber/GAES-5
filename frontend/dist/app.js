@@ -3,6 +3,10 @@
  * SegurIA - Plataforma Interactiva Comunitaria de Seguridad Predictiva
  * Interfaz de Acceso y Monitoreo Situacional Táctico
  */
+// URL base de la API SegurIA. Puede sobreescribirse definiendo window.SEGURIA_API_BASE
+// antes de cargar este script (útil en producción: p. ej. el backend en Render).
+const API_BASE = window.SEGURIA_API_BASE ||
+    'http://localhost:3000';
 class SegurIALoginApp {
     // Canvas Elements
     canvas = null;
@@ -41,14 +45,55 @@ class SegurIALoginApp {
     emergencyTopBtn = null;
     emergencyDirectBtn = null;
     emergencyForm = null;
+    // Recovery (¿Olvidaste tu clave?)
+    forgotLink = null;
+    recoverModal = null;
+    closeRecoverBtn = null;
+    recoverStep1 = null;
+    recoverStep2 = null;
+    recoverMethodEmail = null;
+    recoverMethodPhone = null;
+    recoverContactInput = null;
+    recoverContactLabel = null;
+    recoverContactHint = null;
+    recoverStatus = null;
+    sendCodeBtn = null;
+    recoverSentTo = null;
+    recoverCodeInput = null;
+    recoverCodeHint = null;
+    newPasswordInput = null;
+    confirmPasswordInput = null;
+    recoverStep2Status = null;
+    recoverConfirmBtn = null;
+    resendCodeBtn = null;
+    resendTimerText = null;
+    // Civic ID (Identidad Digital / Google)
+    civicIdModal = null;
+    closeCivicIdBtn = null;
+    googleAccountGrid = null;
+    googleOtherAccount = null;
+    googleOtherEmail = null;
+    googleOtherContinue = null;
+    civicIdStatus = null;
     // State
     currentRole = 'ciudadano';
+    recoverMethod = 'email';
+    recoverContactValue = '';
+    resendCooldown = 0;
+    resendTimerId = 0;
+    demoGoogleAccounts = [
+        { name: 'Maria Fernanda Lopez', email: 'mariafernanda.lopez@gmail.com', initials: 'ML', avatarColor: 'c-emerald' },
+        { name: 'Carlos Andres Perez', email: 'carlos.andres.perez@gmail.com', initials: 'CP', avatarColor: 'c-violet' },
+        { name: 'Laura Quiroz', email: 'preciadolaura202@gmail.com', initials: 'LQ', avatarColor: 'c-rose' },
+        { name: 'Daniel Rojas Mejia', email: 'daniel.rojas@gmail.com', initials: 'DR', avatarColor: 'c-cyan' }
+    ];
     constructor() {
         this.initDOMElements();
         this.initCanvasMap();
         this.initRoleSelector();
         this.initFormInteractions();
         this.initModals();
+        this.initAuthOptions();
         this.initAudioFeedback();
         this.initCoordinatesTracker();
     }
@@ -82,6 +127,34 @@ class SegurIALoginApp {
         this.emergencyTopBtn = document.getElementById('emergencyTopBtn');
         this.emergencyDirectBtn = document.getElementById('emergencyDirectBtn');
         this.emergencyForm = document.getElementById('emergencyForm');
+        this.forgotLink = document.getElementById('forgotLink');
+        this.recoverModal = document.getElementById('recoverModal');
+        this.closeRecoverBtn = document.getElementById('closeRecoverBtn');
+        this.recoverStep1 = document.getElementById('recoverStep1');
+        this.recoverStep2 = document.getElementById('recoverStep2');
+        this.recoverMethodEmail = document.getElementById('recoverMethodEmail');
+        this.recoverMethodPhone = document.getElementById('recoverMethodPhone');
+        this.recoverContactInput = document.getElementById('recoverContactInput');
+        this.recoverContactLabel = document.getElementById('recoverContactLabel');
+        this.recoverContactHint = document.getElementById('recoverContactHint');
+        this.recoverStatus = document.getElementById('recoverStatus');
+        this.sendCodeBtn = document.getElementById('sendCodeBtn');
+        this.recoverSentTo = document.getElementById('recoverSentTo');
+        this.recoverCodeInput = document.getElementById('recoverCodeInput');
+        this.recoverCodeHint = document.getElementById('recoverCodeHint');
+        this.newPasswordInput = document.getElementById('newPasswordInput');
+        this.confirmPasswordInput = document.getElementById('confirmPasswordInput');
+        this.recoverStep2Status = document.getElementById('recoverStep2Status');
+        this.recoverConfirmBtn = document.getElementById('recoverConfirmBtn');
+        this.resendCodeBtn = document.getElementById('resendCodeBtn');
+        this.resendTimerText = document.getElementById('resendTimerText');
+        this.civicIdModal = document.getElementById('civicIdModal');
+        this.closeCivicIdBtn = document.getElementById('closeCivicIdBtn');
+        this.googleAccountGrid = document.getElementById('googleAccountGrid');
+        this.googleOtherAccount = document.getElementById('googleOtherAccount');
+        this.googleOtherEmail = document.getElementById('googleOtherEmail');
+        this.googleOtherContinue = document.getElementById('googleOtherContinue');
+        this.civicIdStatus = document.getElementById('civicIdStatus');
     }
     /**
      * Initialize and run the dynamic tactical map & radar background
@@ -520,7 +593,7 @@ class SegurIALoginApp {
             });
         }
         // Close on backdrop click
-        [this.biometricModal, this.emergencyModal].forEach((modal) => {
+        [this.biometricModal, this.emergencyModal, this.recoverModal, this.civicIdModal].forEach((modal) => {
             if (!modal)
                 return;
             modal.addEventListener('click', (e) => {
@@ -534,6 +607,380 @@ class SegurIALoginApp {
                 }
             });
         });
+    }
+    /**
+     * Password recovery (email / SMS) and Civic ID (Google) authentication flows
+     */
+    initAuthOptions() {
+        // --- Password recovery modal ---
+        if (this.forgotLink && this.recoverModal) {
+            this.forgotLink.addEventListener('click', () => {
+                this.openRecoverModal();
+            });
+        }
+        if (this.closeRecoverBtn) {
+            this.closeRecoverBtn.addEventListener('click', () => {
+                this.recoverModal?.close();
+                this.stopResendCooldown();
+            });
+        }
+        if (this.recoverMethodEmail) {
+            this.recoverMethodEmail.addEventListener('click', () => {
+                this.setRecoverMethod('email');
+            });
+        }
+        if (this.recoverMethodPhone) {
+            this.recoverMethodPhone.addEventListener('click', () => {
+                this.setRecoverMethod('phone');
+            });
+        }
+        if (this.sendCodeBtn) {
+            this.sendCodeBtn.addEventListener('click', () => {
+                void this.sendRecoveryCode();
+            });
+        }
+        if (this.recoverConfirmBtn) {
+            this.recoverConfirmBtn.addEventListener('click', () => {
+                void this.confirmRecovery();
+            });
+        }
+        if (this.resendCodeBtn) {
+            this.resendCodeBtn.addEventListener('click', () => {
+                if (this.resendCooldown > 0)
+                    return;
+                void this.requestRecoveryCode();
+            });
+        }
+        if (this.recoverCodeInput) {
+            this.recoverCodeInput.addEventListener('input', () => {
+                if (this.recoverCodeInput) {
+                    this.recoverCodeInput.value = this.recoverCodeInput.value.replace(/\D/g, '').slice(0, 6);
+                }
+            });
+        }
+        // --- Civic ID / Google modal ---
+        const civicBtn = document.getElementById('btnCivicId');
+        if (civicBtn && this.civicIdModal) {
+            civicBtn.addEventListener('click', () => {
+                this.openCivicIdModal();
+            });
+        }
+        if (this.closeCivicIdBtn) {
+            this.closeCivicIdBtn.addEventListener('click', () => {
+                this.civicIdModal?.close();
+            });
+        }
+        if (this.googleOtherContinue && this.googleOtherEmail) {
+            this.googleOtherContinue.addEventListener('click', () => {
+                const value = this.googleOtherEmail?.value.trim() || '';
+                if (!value.includes('@') || value.length < 5) {
+                    this.showCivicStatus('Ingresa una cuenta de Google válida para continuar.', 'error');
+                    this.playTactileBeep(220, 0.15);
+                    return;
+                }
+                this.completeCivicLogin(value);
+            });
+        }
+        this.renderGoogleAccounts();
+    }
+    openRecoverModal() {
+        if (!this.recoverModal)
+            return;
+        this.setRecoverMethod('email');
+        this.recoverContactValue = '';
+        if (this.recoverContactInput)
+            this.recoverContactInput.value = '';
+        if (this.recoverCodeInput)
+            this.recoverCodeInput.value = '';
+        if (this.newPasswordInput)
+            this.newPasswordInput.value = '';
+        if (this.confirmPasswordInput)
+            this.confirmPasswordInput.value = '';
+        if (this.recoverCodeHint)
+            this.recoverCodeHint.textContent = '';
+        if (this.recoverStep1)
+            this.recoverStep1.hidden = false;
+        if (this.recoverStep2)
+            this.recoverStep2.hidden = true;
+        this.hideRecoverStatus();
+        this.hideRecoverStep2Status();
+        this.stopResendCooldown();
+        this.recoverModal.showModal();
+        this.playTactileBeep(480, 0.05);
+    }
+    setRecoverMethod(method) {
+        this.recoverMethod = method;
+        const isEmail = method === 'email';
+        this.recoverMethodEmail?.classList.toggle('active', isEmail);
+        this.recoverMethodPhone?.classList.toggle('active', !isEmail);
+        this.recoverMethodEmail?.setAttribute('aria-pressed', isEmail.toString());
+        this.recoverMethodPhone?.setAttribute('aria-pressed', (!isEmail).toString());
+        this.recoverContactValue = '';
+        if (this.recoverContactInput) {
+            this.recoverContactInput.type = isEmail ? 'email' : 'tel';
+            this.recoverContactInput.placeholder = isEmail ? 'ej. vecino@colonia.org' : 'ej. +57 300 000 0000';
+            this.recoverContactInput.value = '';
+        }
+        if (this.recoverContactLabel) {
+            this.recoverContactLabel.textContent = isEmail ? 'Correo electrónico registrado' : 'Número de teléfono registrado';
+        }
+        if (this.recoverContactHint) {
+            this.recoverContactHint.textContent = isEmail ? 'CANAL.SEGURO' : 'SMS.SEGURO';
+        }
+        this.hideRecoverStatus();
+        this.playTactileBeep(520, 0.03);
+    }
+    isValidEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+    async sendRecoveryCode() {
+        const value = this.recoverContactInput?.value.trim() || '';
+        const isEmail = this.recoverMethod === 'email';
+        if (!value) {
+            this.showRecoverStatus(isEmail ? 'Ingresa el correo registrado para enviar el código.' : 'Ingresa el teléfono registrado para enviar el código.', 'error');
+            this.playTactileBeep(220, 0.15);
+            return;
+        }
+        if (!isEmail) {
+            this.showRecoverStatus('Por ahora el envío por SMS no está disponible. Usa la opción de correo electrónico.', 'error');
+            this.playTactileBeep(220, 0.15);
+            return;
+        }
+        if (!this.isValidEmail(value)) {
+            this.showRecoverStatus('El formato del correo no es válido.', 'error');
+            this.playTactileBeep(220, 0.15);
+            return;
+        }
+        this.recoverContactValue = value;
+        await this.requestRecoveryCode();
+    }
+    async requestRecoveryCode() {
+        if (!this.recoverContactValue) {
+            this.showRecoverStatus('Ingresa el correo registrado para enviar el código.', 'error');
+            return;
+        }
+        if (this.sendCodeBtn)
+            this.sendCodeBtn.disabled = true;
+        if (this.resendCodeBtn)
+            this.resendCodeBtn.disabled = true;
+        this.showRecoverStatus('Transmitiendo código al canal seguro...', 'info');
+        this.playTactileBeep(580, 0.06);
+        try {
+            const response = await fetch(`${API_BASE}/api/auth/recover`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ correo: this.recoverContactValue }),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'No se pudo enviar el código de recuperación.');
+            }
+            if (this.recoverStep1)
+                this.recoverStep1.hidden = true;
+            if (this.recoverStep2)
+                this.recoverStep2.hidden = false;
+            if (this.recoverSentTo) {
+                this.recoverSentTo.textContent = `Enviamos un código de 6 dígitos a ${this.recoverContactValue}. Revisa tu bandeja de entrada y la carpeta de spam.`;
+            }
+            if (this.recoverCodeHint)
+                this.recoverCodeHint.textContent = 'VÁLIDO 10 MIN';
+            this.hideRecoverStatus();
+            this.showRecoverStep2Status('Código enviado a tu correo electrónico. Verifícalo para restablecer tu clave.', 'success');
+            if (this.recoverCodeInput)
+                this.recoverCodeInput.focus();
+            this.playTactileBeep(650, 0.06);
+            this.startResendCooldown(30);
+        }
+        catch (error) {
+            const message = error instanceof Error ? error.message : 'No se pudo enviar el código de recuperación.';
+            this.showRecoverStatus(message, 'error');
+            if (this.resendCodeBtn)
+                this.resendCodeBtn.disabled = false;
+            this.playTactileBeep(220, 0.15);
+        }
+        finally {
+            if (this.sendCodeBtn)
+                this.sendCodeBtn.disabled = false;
+        }
+    }
+    async confirmRecovery() {
+        const code = this.recoverCodeInput?.value.trim() || '';
+        const pass = this.newPasswordInput?.value || '';
+        const confirm = this.confirmPasswordInput?.value || '';
+        if (code.length !== 6) {
+            this.showRecoverStep2Status('El código de verificación debe tener 6 dígitos.', 'error');
+            this.playTactileBeep(220, 0.15);
+            return;
+        }
+        if (pass.length < 6) {
+            this.showRecoverStep2Status('La nueva clave debe tener al menos 6 caracteres.', 'error');
+            this.playTactileBeep(220, 0.15);
+            return;
+        }
+        if (pass !== confirm) {
+            this.showRecoverStep2Status('Las claves no coinciden. Verifica e intenta de nuevo.', 'error');
+            this.playTactileBeep(220, 0.15);
+            return;
+        }
+        if (this.recoverConfirmBtn)
+            this.recoverConfirmBtn.disabled = true;
+        this.showRecoverStep2Status('Validando código y actualizando credenciales...', 'info');
+        this.playTactileBeep(580, 0.06);
+        try {
+            const response = await fetch(`${API_BASE}/api/auth/recover/verify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    correo: this.recoverContactValue,
+                    codigo: code,
+                    nuevaClave: pass,
+                }),
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.error || 'No se pudo restablecer la clave.');
+            }
+            this.stopResendCooldown();
+            this.recoverModal?.close();
+            this.showStatusBanner('Clave restablecida con éxito. Inicia sesión con tus nuevas credenciales.', 'success');
+            this.playTactileBeep(880, 0.12);
+        }
+        catch (error) {
+            const message = error instanceof Error ? error.message : 'No se pudo restablecer la clave.';
+            this.showRecoverStep2Status(message, 'error');
+            this.playTactileBeep(220, 0.15);
+        }
+        finally {
+            if (this.recoverConfirmBtn)
+                this.recoverConfirmBtn.disabled = false;
+        }
+    }
+    showRecoverStatus(message, type) {
+        if (!this.recoverStatus)
+            return;
+        this.recoverStatus.className = `form-status-banner ${type}`;
+        this.recoverStatus.hidden = false;
+        this.recoverStatus.textContent = message;
+    }
+    hideRecoverStatus() {
+        if (!this.recoverStatus)
+            return;
+        this.recoverStatus.hidden = true;
+        this.recoverStatus.textContent = '';
+    }
+    showRecoverStep2Status(message, type) {
+        if (!this.recoverStep2Status)
+            return;
+        this.recoverStep2Status.className = `form-status-banner ${type}`;
+        this.recoverStep2Status.hidden = false;
+        this.recoverStep2Status.textContent = message;
+    }
+    hideRecoverStep2Status() {
+        if (!this.recoverStep2Status)
+            return;
+        this.recoverStep2Status.hidden = true;
+        this.recoverStep2Status.textContent = '';
+    }
+    startResendCooldown(seconds) {
+        this.stopResendCooldown();
+        this.resendCooldown = seconds;
+        if (this.resendCodeBtn)
+            this.resendCodeBtn.disabled = true;
+        this.updateResendTimer();
+        this.resendTimerId = window.setInterval(() => {
+            this.resendCooldown -= 1;
+            this.updateResendTimer();
+            if (this.resendCooldown <= 0) {
+                this.stopResendCooldown();
+            }
+        }, 1000);
+    }
+    stopResendCooldown() {
+        if (this.resendTimerId) {
+            window.clearInterval(this.resendTimerId);
+            this.resendTimerId = 0;
+        }
+        this.resendCooldown = 0;
+        if (this.resendCodeBtn)
+            this.resendCodeBtn.disabled = false;
+        if (this.resendTimerText)
+            this.resendTimerText.textContent = '';
+    }
+    updateResendTimer() {
+        if (this.resendTimerText) {
+            this.resendTimerText.textContent = this.resendCooldown > 0 ? `Puedes reenviar en ${this.resendCooldown}s` : '';
+        }
+    }
+    openCivicIdModal() {
+        if (!this.civicIdModal)
+            return;
+        this.renderGoogleAccounts();
+        if (this.googleOtherEmail)
+            this.googleOtherEmail.value = '';
+        this.hideCivicStatus();
+        this.civicIdModal.showModal();
+        this.playTactileBeep(480, 0.05);
+    }
+    renderGoogleAccounts() {
+        if (!this.googleAccountGrid)
+            return;
+        this.googleAccountGrid.innerHTML = '';
+        for (const account of this.demoGoogleAccounts) {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'google-account-item';
+            const avatar = document.createElement('span');
+            avatar.className = `google-avatar ${account.avatarColor}`;
+            avatar.textContent = account.initials;
+            const meta = document.createElement('span');
+            meta.className = 'google-account-meta';
+            const name = document.createElement('span');
+            name.className = 'google-account-name';
+            name.textContent = account.name;
+            const email = document.createElement('span');
+            email.className = 'google-account-email';
+            email.textContent = account.email;
+            meta.appendChild(name);
+            meta.appendChild(email);
+            const gWrapper = document.createElement('div');
+            gWrapper.innerHTML = `<svg class="google-g-svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+      </svg>`;
+            item.appendChild(avatar);
+            item.appendChild(meta);
+            const gSvg = gWrapper.firstElementChild;
+            if (gSvg)
+                item.appendChild(gSvg);
+            item.addEventListener('click', () => {
+                this.completeCivicLogin(account.email);
+            });
+            this.googleAccountGrid.appendChild(item);
+        }
+    }
+    completeCivicLogin(email) {
+        this.showCivicStatus('Validando identidad con Google...', 'info');
+        this.playTactileBeep(580, 0.06);
+        window.setTimeout(() => {
+            this.civicIdModal?.close();
+            this.showStatusBanner(`Identidad verificada. Sesión iniciada con Google como ${email}.`, 'success');
+            this.playTactileBeep(880, 0.12);
+        }, 900);
+    }
+    showCivicStatus(message, type) {
+        if (!this.civicIdStatus)
+            return;
+        this.civicIdStatus.className = `form-status-banner ${type}`;
+        this.civicIdStatus.hidden = false;
+        this.civicIdStatus.textContent = message;
+    }
+    hideCivicStatus() {
+        if (!this.civicIdStatus)
+            return;
+        this.civicIdStatus.hidden = true;
+        this.civicIdStatus.textContent = '';
     }
     startBiometricSimulation() {
         if (!this.sensorRing || !this.scannerStatusText)
