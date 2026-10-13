@@ -10,7 +10,7 @@ El **PM lidera** esta reunión y es el canal con el instructor (que hace de clie
 
 ## 1. Identidad del equipo
 
-- **Nombre del equipo:GAES-5**
+- **Nombre del equipo: GAES-5**
 - **Nombre del proyecto: SegurIA**
 - **Integrantes y roles:**
   | Integrante | Rol | Responsable de |
@@ -68,9 +68,9 @@ Deben cubrir **los mínimos del curso**. Marquen qué usarán:
 - [☑] **Backend:** Node.js + Express (API con rutas).
 - [☑] **Base de datos:** MySQL
 - [☑] **Feature clave:** Reseñas y reportes en tiempo real
-- [☑] **Tiempo real (Socket.IO):Socket.IO
+- [☑] **Tiempo real (Socket.IO):** Socket.IO
 - [☑] **Autenticación:** Login con contraseña (hash + sesiones/JWT)
-- [☑] **Otra técnica / API externa:**Leaflet + OpenStreetMap para el mapa
+- [☑] **Otra técnica / API externa:** Leaflet + OpenStreetMap para el mapa
 
 **Tablas de datos previstas (borrador):**
 ```usuarios(
@@ -108,8 +108,8 @@ usuarios(id, nombre, correo, clave_hash, ...)
 - **Backend se desplegará en:** Render
 - **Base de datos:** MySQL
 - **Dominio:** Subdominio gratuito de Vercel
-- **CI/CD:**✅ Sí, despliegue automático con cada push)
-- **Link del proyecto (cuando exista):**Pendiente
+- **CI/CD:** ✅ Sí, despliegue automático con cada push)
+- **Link del proyecto (cuando exista):** Pendiente
 
 ### Costos estimados de servidores
 Aunque usemos capas gratuitas para el curso, estimen qué costaría en "producción real":
@@ -138,14 +138,14 @@ Aunque usemos capas gratuitas para el curso, estimen qué costaría en "producci
 
 ## 7. Riesgos y dudas para el cliente (las lleva el PM)
 
-- **Lo que más nos preocupa:**Riesgos
+- **Lo que más nos preocupa:** Riesgos
 
 Sincronizar correctamente las reseñas en tiempo real entre varios usuarios.
 
 Validar que los reportes tengan información útil y evitar spam.
 
 Integrar correctamente el mapa con los reportes geográficos.
-- **Preguntas para el instructor (cliente):**¿La geolocalización puede ser manual (seleccionando un punto en el mapa) o debe obtenerse automáticamente?
+- **Preguntas para el instructor (cliente):** ¿La geolocalización puede ser manual (seleccionando un punto en el mapa) o debe obtenerse automáticamente?
 
 ¿El MVP necesita moderación de reseñas o basta con publicarlas directamente?
 
