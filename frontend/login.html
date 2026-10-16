@@ -247,10 +247,16 @@
           </div>
         </div>
 
-        <!-- Pie de Cápsula: Enlace Directo para Situaciones de Urgencia -->
-        <footer class="capsule-footer-notice">
-          <span>¿En situación de peligro inminente?</span>
-          <button type="button" id="emergencyDirectBtn" class="btn-direct-emergency">Canal de Emergencia Sin Registro</button>
+        <!-- Pie de Cápsula: Registro y emergencia -->
+        <footer class="capsule-footer-notice" style="flex-direction:column; gap:10px; text-align:center;">
+          <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px; font-size:0.875rem;">
+            <span style="color:var(--text-secondary);">¿No tienes cuenta?</span>
+            <a href="register.html" style="color:var(--signal-yellow); font-weight:700; text-decoration:underline; text-underline-offset:3px;">Crear cuenta</a>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+            <span>¿En situación de peligro inminente?</span>
+            <button type="button" id="emergencyDirectBtn" class="btn-direct-emergency">Canal de Emergencia Sin Registro</button>
+          </div>
         </footer>
       </section>
     </main>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SegurIA - Crear cuenta en la plataforma comunitaria de seguridad ciudadana">
+  <title>SegurIA | Crear Cuenta</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-app.css">
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- Fondo decorativo (igual que login) -->
+  <div class="map-canvas-container" aria-hidden="true">
+    <canvas id="bgCanvas"></canvas>
+    <div class="map-vignette"></div>
+  </div>
+
+  <div class="app-viewport">
+    <!-- Encabezado -->
+    <header class="top-nav" role="banner">
+      <div class="brand-wrapper">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <circle cx="12" cy="11" r="3"/>
+            <path d="M12 8v3l2 2"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-name">Segur<span class="ai-tag">IA</span></div>
+          <span class="brand-sub">Plataforma Comunitaria de Seguridad Ciudadana</span>
+        </div>
+      </div>
+      <div class="top-telemetry">
+        <div class="status-badge" role="status">
+          <span class="status-indicator-dot" aria-hidden="true"></span>
+          <span>SISTEMA EN DEMOSTRACIÓN</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main id="mainContent" class="main-stage">
+      <section class="auth-capsule register-capsule" aria-labelledby="registerHeading">
+        <div class="capsule-body">
+          <header class="capsule-header">
+            <h1 id="registerHeading">Crear cuenta en SegurIA</h1>
+            <p class="capsule-desc">Únete a la red comunitaria. Tu información estará protegida y nunca será compartida sin tu consentimiento.</p>
+          </header>
+
+          <!-- Banner de estado -->
+          <div id="registerBanner" class="form-status-banner info" role="status" aria-live="polite" hidden></div>
+
+          <!-- Aviso de demostración -->
+          <div class="demo-notice" role="note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>Modo demostración: el registro no crea una cuenta real en este momento.</span>
+          </div>
+
+          <!-- Formulario de registro -->
+          <form id="registerForm" class="login-form" novalidate>
+
+            <!-- Nombre completo -->
+            <div class="field-group">
+              <div class="field-label-row">
+                <label for="regNombre" class="field-label">Nombre completo</label>
+              </div>
+              <div class="input-container" id="regNombreWrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  id="regNombre"
+                  name="nombre"
+                  class="text-input"
+                  placeholder="ej. María Fernanda López"
+                  autocomplete="name"
+                  required
+                  minlength="3"
+                  spellcheck="false"
+                  aria-describedby="regNombreErr"
+                >
+              </div>
+              <span class="field-error" id="regNombreErr" aria-live="polite" hidden></span>
+            </div>
+
+            <!-- Correo electrónico -->
+            <div class="field-group">
+              <div class="field-label-row">
+                <label for="regEmail" class="field-label">Correo electrónico</label>
+              </div>
+              <div class="input-container" id="regEmailWrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </span>
+                <input
+                  type="email"
+                  id="regEmail"
+                  name="email"
+                  class="text-input"
+                  placeholder="ej. vecino@colonia.org"
+                  autocomplete="email"
+                  required
+                  spellcheck="false"
+                  aria-describedby="regEmailErr"
+                >
+              </div>
+              <span class="field-error" id="regEmailErr" aria-live="polite" hidden></span>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="field-group">
+              <div class="field-label-row">
+                <label for="regPassword" class="field-label">Contraseña</label>
+                <span class="field-hint">Mínimo 8 caracteres</span>
+              </div>
+              <div class="input-container" id="regPasswordWrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </span>
+                <input
+                  type="password"
+                  id="regPassword"
+                  name="password"
+                  class="text-input"
+                  placeholder="Crea una contraseña segura"
+                  autocomplete="new-password"
+                  required
+                  minlength="8"
+                  aria-describedby="regPasswordErr"
+                >
+                <button
+                  type="button"
+                  class="input-action-btn"
+                  id="toggleRegPassword"
+                  aria-label="Mostrar/ocultar contraseña"
+                  aria-pressed="false"
+                >
+                  <svg id="regEyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <svg id="regEyeClosed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  </svg>
+                </button>
+              </div>
+              <!-- Indicador de fortaleza -->
+              <div id="regStrengthWrap" class="password-strength-wrap" hidden aria-live="polite">
+                <div class="strength-bars" aria-hidden="true">
+                  <div class="strength-segment"></div>
+                  <div class="strength-segment"></div>
+                  <div class="strength-segment"></div>
+                  <div class="strength-segment"></div>
+                </div>
+                <div class="strength-label">
+                  <span id="regStrengthText">Fortaleza</span>
+                </div>
+              </div>
+              <span class="field-error" id="regPasswordErr" aria-live="polite" hidden></span>
+            </div>
+
+            <!-- Confirmar contraseña -->
+            <div class="field-group">
+              <div class="field-label-row">
+                <label for="regPasswordConfirm" class="field-label">Confirmar contraseña</label>
+              </div>
+              <div class="input-container" id="regPasswordConfirmWrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <input
+                  type="password"
+                  id="regPasswordConfirm"
+                  name="passwordConfirm"
+                  class="text-input"
+                  placeholder="Repite tu contraseña"
+                  autocomplete="new-password"
+                  required
+                  aria-describedby="regPasswordConfirmErr"
+                >
+              </div>
+              <span class="field-error" id="regPasswordConfirmErr" aria-live="polite" hidden></span>
+            </div>
+
+            <!-- Términos y condiciones -->
+            <label class="custom-checkbox-label">
+              <input type="checkbox" id="regTerminos" class="native-checkbox sr-only" required>
+              <span class="checkbox-visual" aria-hidden="true">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="1 4 3.5 6.5 9 1"></polyline>
+                </svg>
+              </span>
+              <span>Acepto participar en la red comunitaria de SegurIA</span>
+            </label>
+
+            <!-- Botón de registro -->
+            <button type="submit" id="regSubmitBtn" class="btn-submit btn-accent" aria-busy="false">
+              <span class="btn-loader" aria-hidden="true"></span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+              <span class="btn-text">Crear cuenta</span>
+            </button>
+          </form>
+
+          <!-- Enlace al login -->
+          <div class="auth-divider"><span>¿Ya tienes cuenta?</span></div>
+          <a href="login.html" class="btn-secondary-auth" style="text-decoration:none; display:flex; justify-content:center; gap:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+            Iniciar sesión
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="bottom-ticker" role="contentinfo">
+      <div class="ticker-items">
+        <div class="ticker-item">
+          <span class="badge-dot emerald" aria-hidden="true"></span>
+          <span>RED COMUNITARIA: <span class="ticker-value">ACTIVA</span></span>
+        </div>
+        <div class="ticker-item">
+          <span class="badge-dot yellow" aria-hidden="true"></span>
+          <span>MODO: <span class="ticker-value">DEMOSTRACIÓN ACADÉMICA</span></span>
+        </div>
+      </div>
+      <div class="ticker-coords">GAES-5 · ADSO · SENA · 2026</div>
+    </footer>
+  </div>
+
+  <script src="data/demo-data.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>

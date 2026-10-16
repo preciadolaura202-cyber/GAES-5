@@ -531,7 +531,15 @@ class SegurIALoginApp {
                         this.emailInput.disabled = false;
                     if (this.passwordInput)
                         this.passwordInput.disabled = false;
-                    alert(`Enlace seguro establecido con SegurIA como ${this.currentRole.toUpperCase()}.\n\nSesión iniciada con: ${email}`);
+                    // Guardar sesión de demostración y navegar al panel principal
+                    // TODO: Reemplazar por token JWT real devuelto por el backend
+                    sessionStorage.setItem('seguria_demo_user', JSON.stringify({
+                        nombre: 'Usuario Ciudadano',
+                        email: email,
+                        rol: this.currentRole,
+                        modo: 'demo'
+                    }));
+                    window.location.href = 'dashboard.html';
                 }, 1200);
             }, 900);
         }, 800);
