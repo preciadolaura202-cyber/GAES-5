@@ -202,6 +202,13 @@ function getDemoStats() {
   return { ...DEMO_STATS, totalReportes: _reportesLocales.length };
 }
 
+function eliminarReporteLocal(id) {
+  const index = _reportesLocales.findIndex(r => r.id === id);
+  if (index !== -1) {
+    _reportesLocales.splice(index, 1);
+  }
+}
+
 // Exportar para uso modular (compatibilidad con script type=module y script clásico)
 if (typeof window !== 'undefined') {
   window.SegurIAData = {
@@ -210,6 +217,7 @@ if (typeof window !== 'undefined') {
     getDemoReportes,
     getDemoReporteById,
     agregarReporteLocal,
+    eliminarReporteLocal,
     getDemoCategorias,
     getDemoStats,
   };

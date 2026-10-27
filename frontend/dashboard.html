@@ -69,6 +69,15 @@
             <span>Reportes</span>
           </a>
         </li>
+        <li id="navItemAdmin" class="nav-admin-wrapper" hidden>
+          <a href="admin.html" id="navAdminLink" class="nav-item nav-item-admin">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Administración</span>
+            <span class="admin-badge-dot" title="Panel C5"></span>
+          </a>
+        </li>
         <li>
           <a href="crear-reporte.html" class="nav-item nav-item-accent">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -131,6 +140,14 @@
           <input type="search" class="search-input" id="zoneSearch" placeholder="Buscar zona o barrio…" aria-label="Buscar zona">
           <div class="search-suggestions" id="searchSuggestions" hidden></div>
         </div>
+        <!-- Botón a la página de administración (solo visible para administrador) -->
+        <a href="admin.html" id="btnAdminHeaderShortcut" class="btn-admin-header" hidden aria-label="Ir al panel de administración">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Administración C5</span>
+          <span class="admin-badge-pill">C5</span>
+        </a>
         <a href="crear-reporte.html" class="btn-new-report">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="12" y1="5" x2="12" y2="19"></line>

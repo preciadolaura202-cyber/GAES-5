@@ -52,4 +52,45 @@
       closeSidebar();
     }
   });
+
+  // Mostrar datos del usuario autenticado en la barra lateral
+  try {
+    const rawUser = sessionStorage.getItem('seguria_user') || sessionStorage.getItem('seguria_demo_user');
+    if (rawUser) {
+      const user = JSON.parse(rawUser);
+      const nameEl = document.querySelector('.sidebar-user .user-name');
+      const roleEl = document.querySelector('.sidebar-user .user-role');
+      const avatarEl = document.querySelector('.sidebar-user .user-avatar');
+      const isAdmin = user.rol === 'administrador' || user.rol === 'admin';
+      
+      const navItemAdmin = document.getElementById('navItemAdmin');
+      if (navItemAdmin) {
+        navItemAdmin.hidden = !isAdmin;
+        const navLink = navItemAdmin.querySelector('a');
+        if (navLink) {
+          navLink.href = 'admin.html';
+        }
+      }
+
+      if (nameEl && user.nombre) nameEl.textContent = user.nombre;
+      if (roleEl) {
+        if (isAdmin) {
+          roleEl.textContent = '🛡️ Administrador General';
+          roleEl.style.color = '#38bdf8';
+          roleEl.style.fontWeight = '600';
+        } else {
+          roleEl.textContent = user.rol ? `Rol: ${user.rol}` : (user.correo || 'Usuario Registrado');
+        }
+      }
+      if (avatarEl && user.nombre) {
+        if (isAdmin) {
+          avatarEl.style.background = 'linear-gradient(135deg, #0284c7, #38bdf8)';
+          avatarEl.style.color = '#ffffff';
+        }
+        const parts = user.nombre.trim().split(/\s+/);
+        const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]) : parts[0].substring(0, 2);
+        avatarEl.textContent = initials.toUpperCase();
+      }
+    }
+  } catch (_) {}
 })();

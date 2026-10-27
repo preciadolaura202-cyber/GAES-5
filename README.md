@@ -61,26 +61,31 @@ El proyecto se construyó siguiendo el plan de trabajo del curso, por etapas:
 
 ```
 GAES-5-main/
-├── backend/                  # API Express + MySQL
-│   ├── database/
-│   │   └── schema.sql        # Esquema y seeds de la BD
-│   ├── src/
-│   │   ├── index.js          # Arranque del servidor
-│   │   ├── config/db.js      # Pool de conexión MySQL
-│   │   ├── middlewares/auth.js  # Middleware JWT
-│   │   └── routes/
-│   │       ├── auth.js       # register, login, me
-│   │       └── categorias.js # listado de categorías
-│   ├── .env.example
-│   └── package.json
-├── frontend/                 # Frontend (interfaz de acceso)
-│   ├── login.html            # Página principal
+├── backend-python/           # API Python (FastAPI) + MySQL (phpMyAdmin)
+│   ├── database.py           # Conexión MySQL y creación automática de tablas
+│   ├── security.py           # Hash con Bcrypt y autenticación JWT
+│   ├── schema.sql            # Esquema y semillas de la BD para phpMyAdmin
+│   ├── main.py               # Servidor FastAPI, CORS y Swagger (/docs)
+│   ├── init_db.py            # Inicializador de base de datos
+│   ├── requirements.txt      # Dependencias Python
+│   ├── routes/
+│   │   ├── auth.py           # Registro en MySQL, Login y JWT
+│   │   ├── categorias.py     # Listado de categorías
+│   │   └── reportes.py       # Creación y listado de reportes
+│   └── .env
+├── frontend/                 # Frontend (interfaz comunitaria)
+│   ├── login.html            # Inicio de sesión
+│   ├── register.html         # Formulario de registro conectado a MySQL
+│   ├── dashboard.html        # Panel principal
+│   ├── crear-reporte.html    # Formulario para publicar incidentes
+│   ├── reportes.html         # Listado y filtros de reportes
+│   ├── mapa.html             # Mapa táctico Leaflet
 │   ├── styles.css
-│   ├── src/app.ts            # Lógica en TypeScript
-│   ├── dist/                 # JS compilado
+│   ├── js/                   # Controladores JavaScript
 │   ├── DESIGN.md             # Design system
 │   ├── readme.md             # Definición de producto
 │   └── PLANTILLA-REQUERIMIENTOS.md
+├── iniciar-backend.bat       # Script para iniciar el servidor Python con 1 clic
 └── README.md
 ```
 
@@ -89,23 +94,24 @@ GAES-5-main/
 ## 🚀 Cómo ejecutar
 
 ### Requisitos
-- Node.js 18+
-- MySQL (Workbench / XAMPP local, o Railway en la nube)
+- Python 3.13 (disponible en Laragon)
+- MySQL / phpMyAdmin (Laragon o XAMPP local en el puerto 3306)
 
-### 1. Base de datos
-```bash
-# Importar el esquema
-mysql -u root -p < backend/database/schema.sql
-```
+### 1. Iniciar Base de datos MySQL
+Inicia el servicio MySQL en **Laragon** (hacer clic en *Iniciar Todo*) o en **XAMPP**.
+La base de datos y sus tablas se crean automáticamente al iniciar el servidor backend.
 
-### 2. Backend
-```bash
-cd backend
-cp .env.example .env   # editar credenciales de MySQL y JWT_SECRET
-npm install
-npm run dev            # o: npm start
+### 2. Iniciar el Backend en Python
+Simplemente ejecuta:
+```cmd
+iniciar-backend.bat
 ```
-La API quedará en `http://localhost:3000` (prueba: `http://localhost:3000/health`).
+O manualmente desde la terminal:
+```powershell
+cd backend-python
+.\venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+```
+La API quedará disponible en `http://127.0.0.1:8000` (Swagger docs: `http://127.0.0.1:8000/docs`).
 
 ### 3. Frontend
 Abrir `frontend/login.html` en el navegador, o servirlo con cualquier servidor estático:

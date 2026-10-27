@@ -114,13 +114,33 @@
           </div>
 
           <div class="report-card-footer">
-            <span class="report-demo-badge">Reporte comunitario · demo</span>
-            <a href="detalle-reporte.html?id=${r.id}" class="btn-accent-sm" aria-label="Ver detalle del reporte: ${r.titulo}">Ver detalle</a>
+            <span class="report-demo-badge">Reporte comunitario</span>
+            <div style="display:flex; gap:6px; align-items:center;">
+              ${isAdmin ? `<button type="button" onclick="window.SegurIADeleteReporte(${r.id})" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#fca5a5; padding:4px 8px; border-radius:4px; font-size:0.75rem; cursor:pointer; font-weight:600;">🗑️ Eliminar</button>` : ''}
+              <a href="detalle-reporte.html?id=${r.id}" class="btn-accent-sm" aria-label="Ver detalle del reporte: ${r.titulo}">Ver detalle</a>
+            </div>
           </div>
         </article>
       `;
     }).join('');
   }
+
+  // ── Moderación Administrador ─────────────────────────────────────────────
+  const API_BASE = window.SEGURIA_API_BASE || 'http://127.0.0.1:8000';
+  const rawUser = sessionStorage.getItem('seguria_user') || sessionStorage.getItem('seguria_demo_user');
+  const user = rawUser ? JSON.parse(rawUser) : null;
+  const isAdmin = user && (user.rol === 'administrador' || user.rol === 'admin');
+
+  window.SegurIADeleteReporte = async function(id) {
+    if (!confirm(`[ADMINISTRADOR] ¿Confirmas la eliminación del reporte #${id}?`)) return;
+    try {
+      await fetch(`${API_BASE}/api/admin/reportes/${id}`, { method: 'DELETE' });
+    } catch (_) {}
+    if (window.SegurIAData?.eliminarReporteLocal) {
+      window.SegurIAData.eliminarReporteLocal(id);
+    }
+    render();
+  };
 
   // Render inicial
   render();

@@ -221,10 +221,29 @@
     }
 
     setLoading(true);
-    showBanner('info', 'Publicando reporte de demostración…');
+    showBanner('info', 'Publicando reporte en la base de datos MySQL…');
 
-    // TODO: Reemplazar por: fetch(`${API_BASE}/api/reportes`, { method: 'POST', body: JSON.stringify(payload) })
-    await delay(1000);
+    const API_BASE = window.SEGURIA_API_BASE || 'http://127.0.0.1:8000';
+    const latVal = latInput.value ? Number(latInput.value) : 4.6097;
+    const lngVal = lngInput.value ? Number(lngInput.value) : -74.0817;
+
+    const payload = {
+      titulo: tituloInput.value.trim(),
+      descripcion: descInput.value.trim(),
+      categoriaId: selectedCat.id,
+      lat: latVal,
+      lng: lngVal
+    };
+
+    try {
+      await fetch(`${API_BASE}/api/reportes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (apiErr) {
+      console.warn('[SegurIA] No se pudo guardar en backend MySQL, manteniendo copia local:', apiErr);
+    }
 
     const nuevo = agregarReporteLocal({
       titulo:      tituloInput.value.trim(),
@@ -232,8 +251,8 @@
       categoria:   selectedCat.nombre,
       categoriaId: selectedCat.id,
       ubicacion:   ubicInput.value.trim(),
-      lat:         latInput.value ? Number(latInput.value)  : null,
-      lng:         lngInput.value ? Number(lngInput.value) : null,
+      lat:         latVal,
+      lng:         lngVal,
     });
 
     setLoading(false);

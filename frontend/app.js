@@ -6,7 +6,7 @@
 // URL base de la API SegurIA. Puede sobreescribirse definiendo window.SEGURIA_API_BASE
 // antes de cargar este script (útil en producción: p. ej. el backend en Render).
 const API_BASE = window.SEGURIA_API_BASE ||
-    'http://localhost:3000';
+    'http://127.0.0.1:8000';
 class SegurIALoginApp {
     // Canvas Elements
     canvas = null;
@@ -433,6 +433,18 @@ class SegurIALoginApp {
                 this.updatePasswordStrength(val);
             });
         }
+        // Botón autocompletar administrador
+        const fillAdminBtn = document.getElementById('btnFillAdmin');
+        if (fillAdminBtn && this.emailInput && this.passwordInput) {
+            fillAdminBtn.addEventListener('click', () => {
+                this.emailInput.value = 'admin@seguria.org';
+                this.passwordInput.value = 'admin1234';
+                this.updatePasswordStrength('admin1234');
+                this.clearStatusBanner();
+                this.playTactileBeep(650, 0.06);
+            });
+        }
+
         // Form Submission
         if (this.loginForm) {
             this.loginForm.addEventListener('submit', (e) => {
@@ -490,7 +502,7 @@ class SegurIALoginApp {
     /**
      * Authentic multi-step verification simulation
      */
-    handleFormSubmit() {
+    async handleFormSubmit() {
         const email = this.emailInput?.value.trim() || '';
         const password = this.passwordInput?.value || '';
         // Validation
@@ -513,36 +525,76 @@ class SegurIALoginApp {
             this.emailInput.disabled = true;
         if (this.passwordInput)
             this.passwordInput.disabled = true;
-        this.showStatusBanner('Verificando certificado de nodo y firma criptográfica...', 'info');
+        this.showStatusBanner('Verificando credenciales con la base de datos MySQL...', 'info');
         this.playTactileBeep(580, 0.06);
-        setTimeout(() => {
-            this.showStatusBanner('Escudo IA validando integridad situacional del cuadrante...', 'info');
-            this.playTactileBeep(650, 0.06);
+
+        try {
+            const response = await fetch(`${API_BASE}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    correo: email,
+                    clave: password
+                })
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                if (this.submitBtn) {
+                    this.submitBtn.setAttribute('aria-busy', 'false');
+                    this.submitBtn.disabled = false;
+                }
+                if (this.emailInput)
+                    this.emailInput.disabled = false;
+                if (this.passwordInput)
+                    this.passwordInput.disabled = false;
+
+                const msg = data.detail || data.error || 'Credenciales inválidas. Revisa tu correo o contraseña.';
+                this.showStatusBanner(msg, 'error');
+                this.playTactileBeep(220, 0.2);
+                return;
+            }
+
+            this.showStatusBanner('¡Acceso autorizado! Iniciando enlace en tiempo real...', 'success');
+            this.playTactileBeep(880, 0.12);
+
+            // Guardar token JWT y datos de sesión
+            if (data.token) {
+                sessionStorage.setItem('seguria_token', data.token);
+            }
+            sessionStorage.setItem('seguria_user', JSON.stringify(data.usuario || {}));
+            sessionStorage.setItem('seguria_demo_user', JSON.stringify({
+                id: data.usuario?.id,
+                nombre: data.usuario?.nombre || 'Usuario Registrado',
+                email: data.usuario?.correo || email,
+                rol: data.usuario?.rol || this.currentRole,
+                modo: 'db'
+            }));
+
             setTimeout(() => {
-                this.showStatusBanner('¡Acceso autorizado! Iniciando enlace en tiempo real...', 'success');
-                this.playTactileBeep(880, 0.12);
-                setTimeout(() => {
-                    // Reset state simulation
-                    if (this.submitBtn) {
-                        this.submitBtn.setAttribute('aria-busy', 'false');
-                        this.submitBtn.disabled = false;
-                    }
-                    if (this.emailInput)
-                        this.emailInput.disabled = false;
-                    if (this.passwordInput)
-                        this.passwordInput.disabled = false;
-                    // Guardar sesión de demostración y navegar al panel principal
-                    // TODO: Reemplazar por token JWT real devuelto por el backend
-                    sessionStorage.setItem('seguria_demo_user', JSON.stringify({
-                        nombre: 'Usuario Ciudadano',
-                        email: email,
-                        rol: this.currentRole,
-                        modo: 'demo'
-                    }));
-                    window.location.href = 'dashboard.html';
-                }, 1200);
-            }, 900);
-        }, 800);
+                window.location.href = 'dashboard.html';
+            }, 1000);
+
+        } catch (netErr) {
+            console.error('[SegurIA] Error al conectar login con backend:', netErr);
+            if (this.submitBtn) {
+                this.submitBtn.setAttribute('aria-busy', 'false');
+                this.submitBtn.disabled = false;
+            }
+            if (this.emailInput)
+                this.emailInput.disabled = false;
+            if (this.passwordInput)
+                this.passwordInput.disabled = false;
+
+            this.showStatusBanner(
+                'No se pudo conectar con el backend Python (http://127.0.0.1:8000). Asegúrate de iniciar Laragon/XAMPP y ejecutar iniciar-backend.bat.',
+                'error'
+            );
+            this.playTactileBeep(220, 0.2);
+        }
     }
     showStatusBanner(message, type) {
         if (!this.formStatusBanner)

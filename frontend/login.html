@@ -101,6 +101,15 @@
           <!-- Banner reactivo para avisos de seguridad / estado de autenticación -->
           <div id="formStatusBanner" class="form-status-banner info" role="status" aria-live="polite" hidden></div>
 
+          <!-- Acceso rápido para rol Administrador -->
+          <div style="background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.35); border-radius: 8px; padding: 8px 12px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.8125rem;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="background: #0284c7; color: #ffffff; font-weight: 700; font-size: 0.6875rem; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.5px;">ADMIN</span>
+              <span style="color: var(--text-secondary); font-size: 0.775rem;">admin@seguria.org · <span style="color:var(--text-primary); font-family:var(--font-mono, monospace);">admin1234</span></span>
+            </div>
+            <button type="button" id="btnFillAdmin" style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #38bdf8; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: 600;">Autocompletar</button>
+          </div>
+
           <!-- Formulario de Acceso -->
           <form id="loginForm" class="login-form" novalidate>
             <!-- Campo: Correo o Identificador -->

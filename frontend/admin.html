@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SegurIA | Consola de Administración C5</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-app.css">
+  <script>
+    // Verificación inmediata de rol Administrador (Bloqueo a usuarios no administradores)
+    (function () {
+      try {
+        const raw = sessionStorage.getItem('seguria_user') || sessionStorage.getItem('seguria_demo_user');
+        const u = raw ? JSON.parse(raw) : null;
+        const isAdmin = u && (u.rol === 'administrador' || u.rol === 'admin');
+        if (!isAdmin) {
+          alert('Acceso restringido: Esta página es de uso exclusivo para Administradores de SegurIA.');
+          window.location.replace('dashboard.html');
+        }
+      } catch (_) {
+        window.location.replace('dashboard.html');
+      }
+    })();
+  </script>
+</head>
+<body class="app-layout">
+
+  <!-- Barra lateral de navegación -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menú principal">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="sidebar-brand" aria-label="SegurIA - Inicio">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <circle cx="12" cy="11" r="3"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <span class="brand-name-lg">Segur<span class="ai-tag">IA</span></span>
+          <span class="brand-sub-sm">Centro C5</span>
+        </div>
+      </a>
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Cerrar menú">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="nav-list" role="list">
+        <li>
+          <a href="dashboard.html" class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span>Inicio</span>
+          </a>
+        </li>
+        <li>
+          <a href="mapa.html" class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+              <line x1="8" y1="2" x2="8" y2="18"></line>
+              <line x1="16" y1="6" x2="16" y2="22"></line>
+            </svg>
+            <span>Mapa</span>
+          </a>
+        </li>
+        <li>
+          <a href="reportes.html" class="nav-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Reportes</span>
+          </a>
+        </li>
+        <li id="navItemAdmin" class="nav-admin-wrapper">
+          <a href="admin.html" class="nav-item nav-item-admin active" aria-current="page">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Administración</span>
+            <span class="admin-badge-dot" title="Panel C5"></span>
+          </a>
+        </li>
+        <li>
+          <a href="crear-reporte.html" class="nav-item nav-item-accent">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            <span>Crear reporte</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" aria-hidden="true" style="background: linear-gradient(135deg, #0284c7, #38bdf8); color:#ffffff;">AD</div>
+        <div class="user-info">
+          <span class="user-name">Administrador General</span>
+          <span class="user-role" style="color: #38bdf8; font-weight: 600;">🛡️ Administrador C5</span>
+        </div>
+      </div>
+      <a href="login.html" class="btn-logout" title="Cerrar sesión">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </a>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+  <!-- Contenido principal -->
+  <main class="main-content" id="mainContent">
+
+    <!-- Encabezado de página -->
+    <header class="page-header">
+      <div class="page-header-left">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <h1 class="page-title">Panel de Administración C5</h1>
+            <span class="admin-badge-status" id="adminDbStatus">
+              <span class="status-pulse-dot"></span>
+              <span id="adminDbStatusText">Conectando a MySQL...</span>
+            </span>
+          </div>
+          <p class="page-subtitle">Gestión en tiempo real de usuarios registrados, moderación de incidentes y categorías en MySQL.</p>
+        </div>
+      </div>
+      <div class="page-header-right">
+        <button type="button" class="btn-admin-refresh" id="btnRefreshAdminData" title="Recargar datos directamente desde MySQL">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span>Recargar MySQL</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Tarjetas de Métricas Directas de la Base de Datos -->
+    <section class="stats-grid" style="margin-bottom: 24px;" aria-label="Métricas del sistema desde MySQL">
+      <article class="stat-card">
+        <div class="stat-icon" style="background:rgba(56, 189, 248, 0.15); color:#38bdf8;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Usuarios en MySQL</span>
+          <span class="stat-value" id="metricTotalUsers">—</span>
+          <span class="stat-sub" style="color:#38bdf8;">tabla usuarios</span>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-icon" style="background:rgba(16, 185, 129, 0.15); color:#34d399;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Administradores</span>
+          <span class="stat-value" id="metricTotalAdmins">—</span>
+          <span class="stat-sub" style="color:#34d399;">rol administrador</span>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-icon" style="background:rgba(239, 68, 68, 0.15); color:#f87171;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Reportes Ciudadanos</span>
+          <span class="stat-value" id="metricTotalReports">—</span>
+          <span class="stat-sub" style="color:#f87171;">tabla resenas</span>
+        </div>
+      </article>
+
+      <article class="stat-card">
+        <div class="stat-icon" style="background:rgba(168, 85, 247, 0.15); color:#c084fc;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+          </svg>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">Categorías</span>
+          <span class="stat-value" id="metricTotalCats">—</span>
+          <span class="stat-sub" style="color:#c084fc;">tabla categorias</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Contenedor de Funciones con Pestañas -->
+    <div class="admin-control-panel" style="margin: 0 24px;">
+      <!-- Pestañas de funciones del Administrador -->
+      <nav class="admin-nav-tabs" role="tablist" aria-label="Secciones de administración">
+        <button type="button" class="admin-tab-btn active" role="tab" id="tabBtnUsers" aria-selected="true" data-tab="tabUsers">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+          </svg>
+          <span>Gestión de Usuarios y Roles</span>
+          <span class="tab-count-badge" id="badgeUserCount">—</span>
+        </button>
+
+        <button type="button" class="admin-tab-btn" role="tab" id="tabBtnReports" aria-selected="false" data-tab="tabReports">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          <span>Moderación de Reportes</span>
+          <span class="tab-count-badge" id="badgeReportCount">—</span>
+        </button>
+
+        <button type="button" class="admin-tab-btn" role="tab" id="tabBtnCats" aria-selected="false" data-tab="tabCats">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Gestión de Categorías</span>
+          <span class="tab-count-badge" id="badgeCatCount">—</span>
+        </button>
+
+        <button type="button" class="admin-tab-btn" role="tab" id="tabBtnAudit" aria-selected="false" data-tab="tabAudit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Registro de Auditoría C5</span>
+        </button>
+      </nav>
+
+      <!-- Panel 1: Usuarios y Roles (Exclusivamente de MySQL) -->
+      <div class="admin-tab-pane active" id="paneUsers" role="tabpanel" aria-labelledby="tabBtnUsers">
+        <div class="admin-toolbar">
+          <div class="admin-search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="adminUserSearch" class="admin-search-input" placeholder="Buscar usuario en MySQL por nombre o correo…">
+          </div>
+          <div class="admin-filter-group">
+            <button type="button" class="admin-filter-btn active" data-filter="all">Todos</button>
+            <button type="button" class="admin-filter-btn" data-filter="administrador">Administradores</button>
+            <button type="button" class="admin-filter-btn" data-filter="usuario">Ciudadanos</button>
+          </div>
+        </div>
+
+        <div id="adminUserStatus" style="font-size:0.8125rem; margin-bottom:12px; display:none; padding:8px 12px; border-radius:6px;"></div>
+
+        <div class="admin-users-table-wrap">
+          <table class="admin-users-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Correo Electrónico</th>
+                <th>Rol en Base de Datos</th>
+                <th>Fecha Registro</th>
+                <th style="text-align: right;">Acciones de Rol</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersList">
+              <tr>
+                <td colspan="6" style="text-align:center; padding:28px; color:var(--text-secondary);">
+                  Consultando tabla <code>usuarios</code> en MySQL...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Panel 2: Moderación de Reportes (Exclusivamente de MySQL) -->
+      <div class="admin-tab-pane" id="paneReports" role="tabpanel" aria-labelledby="tabBtnReports" hidden>
+        <div class="admin-toolbar">
+          <div class="admin-search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="search" id="adminReportSearch" class="admin-search-input" placeholder="Buscar reporte en MySQL…">
+          </div>
+          <span style="font-size:0.8rem; color:var(--text-muted);">Al eliminar un reporte, se remueve de forma permanente de la tabla <code>resenas</code> de MySQL.</span>
+        </div>
+
+        <div id="adminReportStatus" style="font-size:0.8125rem; margin-bottom:12px; display:none; padding:8px 12px; border-radius:6px;"></div>
+
+        <div class="admin-reports-grid" id="adminReportsList">
+          <!-- JS carga reportes de MySQL -->
+        </div>
+      </div>
+
+      <!-- Panel 3: Gestión de Categorías (Exclusivamente de MySQL) -->
+      <div class="admin-tab-pane" id="paneCats" role="tabpanel" aria-labelledby="tabBtnCats" hidden>
+        <div class="admin-cats-layout">
+          <!-- Formulario agregar nueva categoría -->
+          <div class="admin-new-cat-box">
+            <h3>Nueva Categoría en MySQL</h3>
+            <p style="font-size:0.785rem; color:var(--text-secondary); margin:0 0 12px; line-height:1.4;">
+              Se insertará un registro en la tabla <code style="color:#38bdf8; font-family:var(--font-mono);">categorias</code> de la base de datos SegurIA.
+            </p>
+            <form id="adminNewCatForm">
+              <div class="admin-cat-input-group">
+                <input type="text" id="adminCatName" placeholder="Nombre (ej. Riña, Acoso, Alumbrado)" required minlength="2" maxlength="50">
+                <button type="submit" class="btn-create-cat">Guardar en MySQL</button>
+              </div>
+            </form>
+            <div id="adminCatStatus" style="font-size:0.8rem; margin-top:8px; display:none; padding:6px 10px; border-radius:4px;"></div>
+          </div>
+
+          <!-- Listado de categorías registradas en MySQL -->
+          <div>
+            <h3 style="font-size:0.95rem; font-weight:700; color:var(--text-primary); margin:0 0 12px;">Categorías Almacenadas en MySQL</h3>
+            <div class="admin-cats-list" id="adminCatsList">
+              <!-- JS carga categorías de MySQL -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 4: Registro de Auditoría -->
+      <div class="admin-tab-pane" id="paneAudit" role="tabpanel" aria-labelledby="tabBtnAudit" hidden>
+        <div class="admin-audit-log">
+          <h3 class="admin-audit-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Registro de Auditoría de Operaciones en MySQL
+          </h3>
+          <ul class="admin-audit-entries" id="adminAuditList">
+            <!-- JS añade logs de acciones -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/sidebar.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

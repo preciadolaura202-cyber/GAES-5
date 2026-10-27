@@ -152,4 +152,22 @@
     if (mapEl) mapEl.style.background = 'var(--bg-surface)';
     if (fbEl)  fbEl.hidden = false;
   }
+  // ── Detección de Rol Administrador para acceso a la página admin.html ──
+  try {
+    const rawUser = sessionStorage.getItem('seguria_user') || sessionStorage.getItem('seguria_demo_user');
+    const user = rawUser ? JSON.parse(rawUser) : null;
+    const isAdmin = user && (user.rol === 'administrador' || user.rol === 'admin');
+
+    if (isAdmin) {
+      const headerBtn = document.getElementById('btnAdminHeaderShortcut');
+      if (headerBtn) headerBtn.hidden = false;
+
+      const sub = document.querySelector('.page-subtitle');
+      if (sub) {
+        sub.innerHTML = `Bienvenido, <strong>${user.nombre || 'Administrador'}</strong> · <span style="color:#38bdf8; font-weight:700;">Sesión de Administrador</span>`;
+      }
+    }
+  } catch (_) {}
 })();
+
+

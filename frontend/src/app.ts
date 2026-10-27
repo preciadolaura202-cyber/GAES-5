@@ -32,7 +32,7 @@ interface GoogleAccount {
 // antes de cargar este script (útil en producción: p. ej. el backend en Render).
 const API_BASE: string =
   (window as unknown as { SEGURIA_API_BASE?: string }).SEGURIA_API_BASE ||
-  'http://localhost:3000';
+  'http://127.0.0.1:8000';
 
 class SegurIALoginApp {
   // Canvas Elements
@@ -502,6 +502,18 @@ class SegurIALoginApp {
       this.passwordInput.addEventListener('input', () => {
         const val = this.passwordInput?.value || '';
         this.updatePasswordStrength(val);
+      });
+    }
+
+    // Boton autocompletar administrador
+    const fillAdminBtn = document.getElementById('btnFillAdmin');
+    if (fillAdminBtn && this.emailInput && this.passwordInput) {
+      fillAdminBtn.addEventListener('click', () => {
+        if (this.emailInput) this.emailInput.value = 'admin@seguria.org';
+        if (this.passwordInput) this.passwordInput.value = 'admin1234';
+        this.updatePasswordStrength('admin1234');
+        this.clearStatusBanner();
+        this.playTactileBeep(650, 0.06);
       });
     }
 
