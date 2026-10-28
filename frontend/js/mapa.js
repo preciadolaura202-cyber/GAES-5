@@ -61,6 +61,11 @@
 
   if (mapEl && typeof L !== 'undefined') {
     try {
+      const fbInit = document.getElementById('mapFallback');
+      if (fbInit) {
+        fbInit.hidden = true;
+        fbInit.style.display = 'none';
+      }
       map = L.map('fullMap', {
         center: [MAPA_CENTRO.lat, MAPA_CENTRO.lng],
         zoom: MAPA_CENTRO.zoom,
@@ -99,10 +104,12 @@
 
     } catch (err) {
       console.warn('[SegurIA] Error al inicializar mapa completo:', err);
-      document.getElementById('mapFallback').hidden = false;
+      const fb = document.getElementById('mapFallback');
+      if (fb) { fb.hidden = false; fb.style.display = 'flex'; }
     }
   } else if (mapEl) {
-    document.getElementById('mapFallback').hidden = false;
+    const fb = document.getElementById('mapFallback');
+    if (fb) { fb.hidden = false; fb.style.display = 'flex'; }
   }
 
   // ── Filtrar marcadores ────────────────────────────────────────────────────

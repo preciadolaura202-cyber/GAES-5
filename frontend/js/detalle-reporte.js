@@ -107,6 +107,7 @@
 
   if (mapEl && typeof L !== 'undefined' && reporte.lat) {
     try {
+      if (mapFbEl) { mapFbEl.hidden = true; mapFbEl.style.display = 'none'; }
       const map = L.map('detailMap', {
         center: [reporte.lat, reporte.lng],
         zoom: 15,

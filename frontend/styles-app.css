@@ -544,6 +544,11 @@ body.app-layout {
   text-align: center;
   padding: 24px;
   background: var(--bg-surface);
+  z-index: 1000;
+}
+
+.map-fallback[hidden] {
+  display: none !important;
 }
 
 .map-fallback p {

@@ -44,6 +44,11 @@
 
   if (mapEl && typeof L !== 'undefined') {
     try {
+      const fbInit = document.getElementById('mapFallback');
+      if (fbInit) {
+        fbInit.hidden = true;
+        fbInit.style.display = 'none';
+      }
       map = L.map('dashMap', {
         center: [MAPA_CENTRO.lat, MAPA_CENTRO.lng],
         zoom: MAPA_CENTRO.zoom - 1,
@@ -353,7 +358,10 @@
     const mapEl = document.getElementById(mapId);
     const fbEl  = document.getElementById(fallbackId);
     if (mapEl) mapEl.style.background = 'var(--bg-surface)';
-    if (fbEl)  fbEl.hidden = false;
+    if (fbEl) {
+      fbEl.hidden = false;
+      fbEl.style.display = 'flex';
+    }
   }
   // ── Detección de Rol Administrador para acceso a la página admin.html ──
   try {

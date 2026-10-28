@@ -88,6 +88,8 @@
 
   if (mapEl && typeof L !== 'undefined') {
     try {
+      const fb = document.getElementById('createMapFallback');
+      if (fb) { fb.hidden = true; fb.style.display = 'none'; }
       miniMap = L.map('createMap', {
         center: [MAPA_CENTRO.lat, MAPA_CENTRO.lng],
         zoom: MAPA_CENTRO.zoom,
