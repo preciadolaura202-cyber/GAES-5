@@ -72,30 +72,10 @@
     <main id="mainContent" class="main-stage">
       <section class="auth-capsule" aria-labelledby="authHeading">
         <div class="capsule-body">
-          <!-- Selector de Modo de Acceso: Ciudadano vs Operador -->
-          <nav class="role-nav" role="tablist" aria-label="Perfil de acceso">
-            <button type="button" role="tab" id="tabCitizen" class="role-tab-btn" aria-selected="true" aria-controls="loginForm">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-              <span>Ciudadano</span>
-            </button>
-            <button type="button" role="tab" id="tabOperator" class="role-tab-btn" aria-selected="false" aria-controls="loginForm">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
-              <span>Operador C5</span>
-            </button>
-          </nav>
-
+          
           <header class="capsule-header">
             <h1 id="authHeading">Iniciar Sesión</h1>
-            <p class="capsule-desc">Accede a la cartografía en tiempo real y alertas comunitarias de tu cuadrante en Bucaramanga.</p>
+            <p class="capsule-desc">Acceso unificado a la red SegurIA en Bucaramanga para usuarios y administradores.</p>
           </header>
 
           <!-- Banner reactivo para avisos de seguridad / estado de autenticación -->
@@ -128,7 +108,7 @@
                   id="emailInput" 
                   name="email" 
                   class="text-input" 
-                  placeholder="ej. admin@seguria.org" 
+                  placeholder="ej. admin@seguria.org o tu@correo.com" 
                   autocomplete="email" 
                   required 
                   spellcheck="false"
@@ -404,7 +384,7 @@
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
             </span>
-            <input type="email" id="recoverContactInput" name="recoverContact" class="text-input" placeholder="ej. admin@seguria.org" autocomplete="email" spellcheck="false" aria-labelledby="recoverContactLabel">
+            <input type="email" id="recoverContactInput" name="recoverContact" class="text-input" placeholder="ej. admin@seguria.org o tu@correo.com" autocomplete="email" spellcheck="false" aria-labelledby="recoverContactLabel">
           </div>
         </div>
 

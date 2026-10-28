@@ -340,15 +340,11 @@ class SegurIALoginApp {
     /**
      * Handle Role Switching: Ciudadano vs Operador
      */
+    /**
+     * Acceso Unificado: no se requiere selector manual de rol
+     */
     initRoleSelector() {
-        if (!this.roleTabCitizen || !this.roleTabOperator)
-            return;
-        this.roleTabCitizen.addEventListener('click', () => {
-            this.switchRole('ciudadano');
-        });
-        this.roleTabOperator.addEventListener('click', () => {
-            this.switchRole('operador');
-        });
+        // Enfoque unificado: todos los usuarios y administradores se autentican por el mismo formulario
     }
     switchRole(role) {
         this.currentRole = role;
@@ -570,17 +566,22 @@ class SegurIALoginApp {
             if (data.token) {
                 sessionStorage.setItem('seguria_token', data.token);
             }
+            const rolDetectado = (data.usuario?.rol || (email.toLowerCase().includes('admin') ? 'administrador' : 'usuario')).toLowerCase();
             sessionStorage.setItem('seguria_user', JSON.stringify(data.usuario || {}));
             sessionStorage.setItem('seguria_demo_user', JSON.stringify({
                 id: data.usuario?.id,
-                nombre: data.usuario?.nombre || 'Usuario Registrado',
+                nombre: data.usuario?.nombre || (rolDetectado === 'administrador' || rolDetectado === 'admin' ? 'Administrador General' : 'Usuario Registrado'),
                 email: data.usuario?.correo || email,
-                rol: data.usuario?.rol || this.currentRole,
+                rol: rolDetectado,
                 modo: 'db'
             }));
 
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                if (rolDetectado === 'administrador' || rolDetectado === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
             }, 1000);
 
         } catch (netErr) {

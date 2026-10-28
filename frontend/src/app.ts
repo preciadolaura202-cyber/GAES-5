@@ -409,18 +409,10 @@ class SegurIALoginApp {
   }
 
   /**
-   * Handle Role Switching: Ciudadano vs Operador
+   * Acceso Unificado: no se requiere selector manual de rol
    */
   private initRoleSelector(): void {
-    if (!this.roleTabCitizen || !this.roleTabOperator) return;
-
-    this.roleTabCitizen.addEventListener('click', () => {
-      this.switchRole('ciudadano');
-    });
-
-    this.roleTabOperator.addEventListener('click', () => {
-      this.switchRole('operador');
-    });
+    // Enfoque unificado: todos los usuarios y administradores se autentican por el mismo formulario
   }
 
   private switchRole(role: 'ciudadano' | 'operador'): void {
