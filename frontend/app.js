@@ -201,7 +201,7 @@ class SegurIALoginApp {
                 y1: y + (Math.sin(i * 1.5) * 20),
                 x2: w,
                 y2: y + (Math.sin(i * 1.5) * 20),
-                intensity: (i % 3 === 0) ? 0.08 : 0.03
+                intensity: (i % 3 === 0) ? 0.20 : 0.09
             });
         }
         // Vertical avenues
@@ -212,21 +212,21 @@ class SegurIALoginApp {
                 y1: 0,
                 x2: x + (Math.cos(j * 1.2) * 25),
                 y2: h,
-                intensity: (j % 4 === 0) ? 0.08 : 0.03
+                intensity: (j % 4 === 0) ? 0.20 : 0.09
             });
         }
         // Add strategic diagonal highway connectors
-        this.streetLines.push({ x1: 0, y1: h * 0.25, x2: w * 0.7, y2: h, intensity: 0.06 }, { x1: w * 0.3, y1: 0, x2: w, y2: h * 0.7, intensity: 0.06 });
+        this.streetLines.push({ x1: 0, y1: h * 0.25, x2: w * 0.7, y2: h, intensity: 0.14 }, { x1: w * 0.3, y1: 0, x2: w, y2: h * 0.7, intensity: 0.14 });
         // Generate Risk and Safety Community Nodes
         const nodeConfigs = [
-            { relX: 0.22, relY: 0.28, level: 'safe', label: 'C-04 NORTE' },
-            { relX: 0.18, relY: 0.72, level: 'safe', label: 'C-09 OESTE' },
-            { relX: 0.82, relY: 0.22, level: 'caution', label: 'C-15 INDUSTRIAL' },
-            { relX: 0.76, relY: 0.68, level: 'danger', label: 'INCIDENTE #412' },
-            { relX: 0.48, relY: 0.15, level: 'safe', label: 'CORREDOR CENTRAL' },
-            { relX: 0.35, relY: 0.85, level: 'caution', label: 'C-22 TRANSITO' },
-            { relX: 0.88, relY: 0.88, level: 'safe', label: 'ZONA SUR VERIFICADA' },
-            { relX: 0.12, relY: 0.48, level: 'danger', label: 'ALERTA ACTIVA #398' }
+            { relX: 0.22, relY: 0.28, level: 'safe', label: 'CABECERA DEL LLANO' },
+            { relX: 0.18, relY: 0.72, level: 'safe', label: 'PROVENZA' },
+            { relX: 0.82, relY: 0.22, level: 'caution', label: 'SAN FRANCISCO' },
+            { relX: 0.76, relY: 0.68, level: 'danger', label: 'ALERTA #412 CENTRO' },
+            { relX: 0.48, relY: 0.15, level: 'safe', label: 'CORREDOR CRA 27' },
+            { relX: 0.35, relY: 0.85, level: 'caution', label: 'REAL DE MINAS' },
+            { relX: 0.88, relY: 0.88, level: 'safe', label: 'SOTOMAYOR' },
+            { relX: 0.12, relY: 0.48, level: 'danger', label: 'AVENIDA LA ROSITA' }
         ];
         for (const conf of nodeConfigs) {
             this.riskNodes.push({
@@ -281,7 +281,7 @@ class SegurIALoginApp {
         const endY = centerY + Math.sin(this.radarAngle) * radarRadius;
         // Sweep line
         const sweepGradient = ctx.createLinearGradient(centerX, centerY, endX, endY);
-        sweepGradient.addColorStop(0, 'rgba(0, 229, 255, 0.25)');
+        sweepGradient.addColorStop(0, 'rgba(0, 229, 255, 0.36)');
         sweepGradient.addColorStop(0.5, 'rgba(0, 229, 255, 0.08)');
         sweepGradient.addColorStop(1, 'rgba(0, 229, 255, 0)');
         ctx.beginPath();
@@ -359,16 +359,21 @@ class SegurIALoginApp {
         if (role === 'ciudadano') {
             this.roleTabCitizen?.setAttribute('aria-selected', 'true');
             this.roleTabOperator?.setAttribute('aria-selected', 'false');
-            if (emailLabel)
-                emailLabel.textContent = 'Correo electrónico o Identificador Ciudadano';
-            if (emailHint)
-                emailHint.textContent = 'USR.CIVIC';
-            if (this.emailInput)
-                this.emailInput.placeholder = 'ej. vecino@colonia.org';
-            if (descText)
-                descText.textContent = 'Accede a la cartografía en tiempo real, alertas de incidentes comunitarios y navegación segura en tu cuadrante.';
-            if (this.domainChipsContainer)
-                this.domainChipsContainer.hidden = false;
+            if (emailLabel) {
+                emailLabel.textContent = 'Correo electrónico o usuario';
+            }
+            if (emailHint) {
+                emailHint.textContent = '';
+            }
+            if (this.emailInput) {
+                this.emailInput.placeholder = 'ej. admin@seguria.org';
+            }
+            if (descText) {
+                descText.textContent = 'Accede a la cartografía en tiempo real y alertas comunitarias de Bucaramanga.';
+            }
+            if (this.domainChipsContainer) {
+                this.domainChipsContainer.hidden = true;
+            }
         }
         else {
             this.roleTabCitizen?.setAttribute('aria-selected', 'false');

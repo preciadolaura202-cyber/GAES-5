@@ -3,19 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SegurIA | Panel Principal</title>
+  <meta name="description" content="SegurIA - Consola Cívica de Seguridad y Prevención Urbana en Bucaramanga">
+  <title>SegurIA | Consola Situacional de Bucaramanga</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="styles-app.css">
-  <!-- Leaflet para el mapa -->
+  <!-- Leaflet para cartografía -->
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body class="app-layout">
 
-  <!-- Barra lateral de navegación -->
-  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menú principal">
+  <!-- Accesibilidad: Enlace directo al contenido principal -->
+  <a href="#mainContent" class="skip-link">Saltar a la consola operativa</a>
+
+  <!-- Barra lateral de navegación elegante crema -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menú principal de la consola">
     <div class="sidebar-header">
-      <a href="dashboard.html" class="sidebar-brand" aria-label="SegurIA - Inicio">
+      <a href="dashboard.html" class="sidebar-brand" aria-label="SegurIA - Consola Cívica">
         <div class="brand-icon" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -24,15 +28,24 @@
         </div>
         <div class="sidebar-brand-text">
           <span class="brand-name-lg">Segur<span class="ai-tag">IA</span></span>
-          <span class="brand-sub-sm">Red Ciudadana</span>
+          <span class="brand-sub-sm">Bucaramanga Cívica</span>
         </div>
       </a>
-      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Cerrar menú" aria-expanded="true">
+      <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Cerrar menú de navegación" aria-expanded="true">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
+    </div>
+
+    <!-- Indicador de telemetría de red en barra lateral -->
+    <div class="sidebar-telemetry-badge" role="status" aria-label="Estado del sistema: Red comunitaria operativa">
+      <span class="telemetry-beacon" aria-hidden="true"></span>
+      <div class="telemetry-text-group">
+        <span class="telemetry-status-title">RED ACTIVA</span>
+        <span class="telemetry-status-detail">Distrito Bucaramanga en línea</span>
+      </div>
     </div>
 
     <nav class="sidebar-nav">
@@ -45,7 +58,7 @@
               <rect x="14" y="14" width="7" height="7"></rect>
               <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
-            <span>Inicio</span>
+            <span>Consola</span>
           </a>
         </li>
         <li>
@@ -55,7 +68,7 @@
               <line x1="8" y1="2" x2="8" y2="18"></line>
               <line x1="16" y1="6" x2="16" y2="22"></line>
             </svg>
-            <span>Mapa</span>
+            <span>Cartografía</span>
           </a>
         </li>
         <li>
@@ -75,18 +88,18 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            <span>Administración</span>
-            <span class="admin-badge-dot" title="Panel C5"></span>
+            <span>Administración C5</span>
+            <span class="admin-badge-dot" title="Panel de Mando C5"></span>
           </a>
         </li>
         <li>
           <a href="crear-reporte.html" class="nav-item nav-item-accent">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="8" x2="12" y2="16"></line>
               <line x1="8" y1="12" x2="16" y2="12"></line>
             </svg>
-            <span>Crear reporte</span>
+            <span>Nuevo reporte</span>
           </a>
         </li>
       </ul>
@@ -97,10 +110,10 @@
         <div class="user-avatar" aria-hidden="true">UC</div>
         <div class="user-info">
           <span class="user-name">Usuario Ciudadano</span>
-          <span class="user-role">Modo Demostración</span>
+          <span class="user-role">Bucaramanga</span>
         </div>
       </div>
-      <a href="login.html" class="btn-logout" title="Cerrar sesión">
+      <a href="login.html" class="btn-logout" title="Cerrar sesión" aria-label="Cerrar sesión">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
@@ -114,42 +127,61 @@
   <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
   <!-- Contenido principal -->
-  <div class="main-content" id="mainContent">
+  <main class="main-content" id="mainContent">
 
-    <!-- Encabezado del panel -->
-    <header class="page-header">
+    <!-- Encabezado táctico de la consola -->
+    <header class="page-header" role="banner">
       <div class="page-header-left">
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú" aria-expanded="false">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú de navegación" aria-expanded="false">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
-        <div>
-          <h1 class="page-title">Panel de Monitoreo</h1>
-          <p class="page-subtitle">Bienvenido a la red comunitaria SegurIA · <span class="demo-tag">Datos de demostración</span></p>
+        <div class="page-header-titles">
+          <div class="sector-status-ribbon">
+            <span class="sector-status-pill">DISTRITO METROPOLITANO BUCARAMANGA · SECTOR 01</span>
+            <span class="sector-time-pill" id="sectorLiveClock">BUCARAMANGA · UTC-5</span>
+          </div>
+          <h1 class="page-title">Consola Situacional de Monitoreo</h1>
+          <p class="page-subtitle">Red Comunitaria de Prevención Urbana · Bucaramanga · <span class="badge-status-online">Enlace Activo</span></p>
         </div>
       </div>
+
       <div class="page-header-right">
-        <!-- Búsqueda de zonas -->
+        <!-- Búsqueda rápida de zonas -->
         <div class="search-wrap" role="search">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="search" class="search-input" id="zoneSearch" placeholder="Buscar zona o barrio…" aria-label="Buscar zona">
+          <input type="search" class="search-input" id="zoneSearch" placeholder="Buscar barrio en Bucaramanga…" aria-label="Buscar zona o barrio">
+          <span class="search-hotkey-chip" aria-hidden="true">/</span>
           <div class="search-suggestions" id="searchSuggestions" hidden></div>
         </div>
-        <!-- Botón a la página de administración (solo visible para administrador) -->
-        <a href="admin.html" id="btnAdminHeaderShortcut" class="btn-admin-header" hidden aria-label="Ir al panel de administración">
+
+        <!-- Botón de acceso directo C5 (solo visible para administrador) -->
+        <a href="admin.html" id="btnAdminHeaderShortcut" class="btn-admin-header" hidden aria-label="Ir al panel de mando C5">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
           <span>Administración C5</span>
           <span class="admin-badge-pill">C5</span>
         </a>
-        <a href="crear-reporte.html" class="btn-new-report">
+
+        <!-- Botón de geolocalización rápida en cabecera -->
+        <button type="button" id="btnGeolocalizar" class="btn-locate" title="Obtener mi ubicación actual" aria-label="Centrar mapa en mi ubicación">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 2v3m0 14v3M2 12h3m14 0h3"></path>
+            <circle cx="12" cy="12" r="8"></circle>
+          </svg>
+          <span>Mi ubicación</span>
+        </button>
+
+        <!-- Acción primaria: Reportar incidente -->
+        <a href="crear-reporte.html" class="btn-new-report" aria-label="Crear nuevo reporte de seguridad">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -159,103 +191,105 @@
       </div>
     </header>
 
-    <!-- Tarjetas de resumen -->
-    <section class="stats-grid" aria-label="Resumen estadístico de demostración">
-      <article class="stat-card" tabindex="0">
-        <div class="stat-icon stat-icon-red" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+    <!-- Barra de telemetría situacional del cuadrante -->
+    <section class="stats-grid" aria-label="Resumen operativo de Bucaramanga">
+      <!-- Módulo 1: Estado Operativo y Alerta -->
+      <article class="stat-card" tabindex="0" aria-label="Estado operativo: Normal">
+        <div class="stat-header-row">
+          <span class="stat-label">Estado de Alerta</span>
+          <span class="stat-indicator-emerald">Normal</span>
         </div>
         <div class="stat-body">
-          <span class="stat-label">Total reportes</span>
-          <span class="stat-value" id="statTotal">—</span>
-          <span class="stat-sub demo-tag">demo</span>
+          <div class="stat-status-text">CONDICIÓN ESTABLE</div>
+          <p class="stat-sub-detail">Monitoreo activo sin alertas críticas en el perímetro metropolitano.</p>
         </div>
       </article>
 
-      <article class="stat-card" tabindex="0">
-        <div class="stat-icon stat-icon-yellow" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
+      <!-- Módulo 2: Total de incidentes y desglose -->
+      <article class="stat-card" tabindex="0" aria-label="Total de reportes registrados y actividad">
+        <div class="stat-header-row">
+          <span class="stat-label">Incidentes Registrados</span>
+          <span class="stat-tag-cyan">Telemetría</span>
         </div>
         <div class="stat-body">
-          <span class="stat-label">Reportes hoy</span>
-          <span class="stat-value" id="statHoy">—</span>
-          <span class="stat-sub demo-tag">demo</span>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-meta-breakdown">
+            <span class="stat-meta-item">Hoy: <strong id="statHoy">0</strong></span>
+            <span class="stat-meta-sep" aria-hidden="true">•</span>
+            <span class="stat-meta-item">Mes: <strong id="statMes">0</strong></span>
+          </div>
         </div>
       </article>
 
-      <article class="stat-card" tabindex="0">
-        <div class="stat-icon stat-icon-green" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-            <line x1="8" y1="2" x2="8" y2="18"></line>
-            <line x1="16" y1="6" x2="16" y2="22"></line>
-          </svg>
+      <!-- Módulo 3: Cobertura de vigilancia territorial -->
+      <article class="stat-card" tabindex="0" aria-label="Sectores de Bucaramanga bajo monitoreo">
+        <div class="stat-header-row">
+          <span class="stat-label">Vigilancia Territorial</span>
+          <span class="stat-tag-emerald">Cobertura</span>
         </div>
         <div class="stat-body">
-          <span class="stat-label">Zonas mapeadas</span>
-          <span class="stat-value" id="statZonas">—</span>
-          <span class="stat-sub demo-tag">demo</span>
+          <div class="stat-value" id="statZonas">0</div>
+          <p class="stat-sub-detail">Comunas y sectores con patrullaje ciudadano activo.</p>
         </div>
       </article>
 
-      <article class="stat-card" tabindex="0">
-        <div class="stat-icon stat-icon-blue" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
+      <!-- Módulo 4: Canal de Enlace de Emergencia -->
+      <article class="stat-card stat-card-action" tabindex="0" aria-label="Líneas de respuesta inmediata en Bucaramanga">
+        <div class="stat-header-row">
+          <span class="stat-label">Respuesta Inmediata</span>
+          <span class="stat-tag-yellow">Asistencia</span>
         </div>
         <div class="stat-body">
-          <span class="stat-label">Reportes del mes</span>
-          <span class="stat-value" id="statMes">—</span>
-          <span class="stat-sub demo-tag">demo</span>
+          <div class="emergency-contacts">
+            <span class="emergency-contact-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              Línea 123 Nacional
+            </span>
+            <span class="emergency-contact-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              CAI Central Bucaramanga
+            </span>
+          </div>
+          <p class="stat-sub-detail">Protocolo de enlace directo activado.</p>
         </div>
       </article>
     </section>
 
-    <!-- Cuerpo del dashboard: Mapa + Reportes recientes -->
+    <!-- Cuerpo del dashboard: Cartografía Táctica + Bitácora Reciente -->
     <div class="dashboard-body">
 
-      <!-- Mapa interactivo -->
-      <section class="map-panel" aria-label="Mapa de incidentes">
+      <!-- Panel de Cartografía Táctica -->
+      <section class="map-panel" aria-label="Cartografía interactiva de incidentes en Bucaramanga">
         <div class="panel-header">
-          <h2 class="panel-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-            </svg>
-            Mapa de incidentes
-          </h2>
-          <div class="panel-header-actions">
-            <button type="button" id="btnGeolocalizar" class="btn-locate" title="Obtener mi ubicación actual">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M12 2v3m0 14v3M2 12h3m14 0h3"></path>
-                <circle cx="12" cy="12" r="8"></circle>
+          <div class="panel-title-group">
+            <h2 class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
               </svg>
-              <span>Mi ubicación</span>
-            </button>
+              Cartografía Urbana de Bucaramanga
+            </h2>
+            <span class="panel-header-badge">Vista Metropolínea</span>
+          </div>
+          <div class="panel-header-actions">
             <a href="mapa.html" class="btn-panel-action">Ver mapa completo →</a>
           </div>
         </div>
 
-        <!-- Tarjeta de estado de geolocalización -->
+        <!-- Tarjeta HUD de estado de geolocalización -->
         <div id="geoCard" class="geo-status-card" hidden aria-live="polite">
           <div class="geo-card-header">
             <div class="geo-card-title-group">
               <span class="geo-status-dot" id="geoStatusDot" aria-hidden="true"></span>
-              <strong class="geo-card-title">Geolocalización del usuario</strong>
+              <strong class="geo-card-title">Geolocalización del Operador</strong>
             </div>
-            <span class="geo-status-pill" id="geoStatusPill">Inactivo</span>
-            <button type="button" id="btnCloseGeoCard" class="geo-close-btn" aria-label="Cerrar panel de ubicación">✕</button>
+            <div class="geo-card-controls">
+              <span class="geo-status-pill" id="geoStatusPill">Inactivo</span>
+              <button type="button" id="btnCloseGeoCard" class="geo-close-btn" aria-label="Cerrar panel de ubicación">✕</button>
+            </div>
           </div>
 
           <div class="geo-card-message" id="geoMessage" hidden></div>
@@ -263,66 +297,83 @@
           <div class="geo-data-grid" id="geoDataGrid" hidden>
             <div class="geo-data-item">
               <span class="geo-data-label">Latitud</span>
-              <span class="geo-data-value" id="geoLat">—</span>
+              <span class="geo-data-value" id="geoLat">7.119300</span>
             </div>
             <div class="geo-data-item">
               <span class="geo-data-label">Longitud</span>
-              <span class="geo-data-value" id="geoLng">—</span>
+              <span class="geo-data-value" id="geoLng">-73.122700</span>
             </div>
             <div class="geo-data-item">
               <span class="geo-data-label">Precisión aprox.</span>
-              <span class="geo-data-value" id="geoAccuracy">—</span>
+              <span class="geo-data-value" id="geoAccuracy">± 0 m</span>
             </div>
             <div class="geo-data-item">
               <span class="geo-data-label">Estado</span>
-              <span class="geo-data-value text-accent" id="geoStateText">—</span>
+              <span class="geo-data-value text-accent" id="geoStateText">Activo</span>
             </div>
           </div>
           <p class="geo-footnote">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-            Las coordenadas se procesan exclusivamente de forma local en tu navegador.
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Las coordenadas GPS se procesan estrictamente de forma local en tu navegador.
           </p>
         </div>
 
-        <div class="map-container" id="dashMap" aria-label="Mapa interactivo de reportes de demostración">
+        <div class="map-container" id="dashMap" aria-label="Mapa interactivo de incidentes en Bucaramanga">
           <!-- Leaflet se inicializa aquí -->
           <div class="map-fallback" id="mapFallback" hidden>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
             </svg>
-            <p>No se pudo cargar el mapa.</p>
-            <p class="map-fallback-sub">Verifica tu conexión a internet y recarga la página.</p>
+            <p>No se pudo inicializar la cartografía interactiva.</p>
+            <p class="map-fallback-sub">Comprueba tu conexión a la red y vuelve a cargar la consola.</p>
           </div>
         </div>
 
-        <!-- Leyenda -->
-        <div class="map-legend" aria-label="Leyenda de categorías">
+        <!-- Leyenda táctica de categorías -->
+        <div class="map-legend" aria-label="Leyenda de tipos de incidentes">
           <span class="legend-title">Categorías:</span>
           <div class="legend-items" id="legendItems">
-            <!-- JS genera los items -->
+            <!-- JS genera dinámicamente los items -->
           </div>
         </div>
       </section>
 
-      <!-- Panel de reportes recientes -->
-      <section class="recent-panel" aria-label="Reportes recientes">
+      <!-- Panel de bitácora de incidentes recientes -->
+      <section class="recent-panel" aria-label="Bitácora de incidentes recientes en Bucaramanga">
         <div class="panel-header">
-          <h2 class="panel-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-            </svg>
-            Reportes recientes
-          </h2>
+          <div class="panel-title-group">
+            <h2 class="panel-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+              Bitácora de Incidentes
+            </h2>
+            <span class="panel-header-badge-live">Bucaramanga</span>
+          </div>
           <a href="reportes.html" class="btn-panel-action">Ver todos →</a>
         </div>
-        <ul class="recent-list" id="recentList" aria-label="Lista de reportes recientes" role="list">
-          <!-- JS genera los items -->
+
+        <ul class="recent-list" id="recentList" aria-label="Lista de incidentes reportados recientemente" role="list">
+          <!-- JS genera dinámicamente los items -->
         </ul>
+
+        <div class="recent-footer-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Selecciona un incidente para consultar georreferenciación y recomendaciones preventivas.</span>
+        </div>
       </section>
     </div>
 
-  </div><!-- /main-content -->
+  </main><!-- /mainContent -->
 
   <script src="vendor/leaflet/leaflet.js"></script>
   <script>
@@ -333,5 +384,21 @@
   <script src="data/demo-data.js"></script>
   <script src="js/sidebar.js"></script>
   <script src="js/dashboard.js"></script>
+  <script>
+    // Reloj operativo en vivo (Bucaramanga / UTC-5)
+    (function() {
+      const clockEl = document.getElementById('sectorLiveClock');
+      if (!clockEl) return;
+      function updateClock() {
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        const sec = String(now.getSeconds()).padStart(2, '0');
+        clockEl.textContent = `BUCARAMANGA · ${hrs}:${min}:${sec} COT`;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    })();
+  </script>
 </body>
 </html>

@@ -78,10 +78,10 @@
 
         marker.bindPopup(`
           <div style="font-family: Archivo, sans-serif; font-size: 13px; max-width: 220px;">
-            <div style="font-weight:700; margin-bottom:4px;">${r.titulo}</div>
-            <div style="color:#94A3B8; margin-bottom:6px;">${r.categoria} · ${r.fecha}</div>
-            <div style="line-height:1.4; color:#CBD5E1;">${r.descripcion.substring(0, 100)}…</div>
-            <div style="margin-top:8px; font-size:11px; color:#FBBF24; font-style:italic;">⚠ Datos de demostración</div>
+            <div style="font-weight:700; margin-bottom:4px; color:#1C1917;">${r.titulo}</div>
+            <div style="color:#78716C; margin-bottom:6px; font-size:12px;">${r.categoria} · ${r.fecha}</div>
+            <div style="line-height:1.4; color:#44403C;">${r.descripcion.substring(0, 100)}…</div>
+            <div style="margin-top:8px; font-size:11px; color:#B45309; font-weight:600;">⚠ Datos de demostración</div>
           </div>
         `, { className: 'seguria-popup' });
       });
@@ -191,13 +191,13 @@
 
       userMarker.bindPopup(`
         <div style="font-family: Archivo, sans-serif; font-size: 13px; max-width: 220px;">
-          <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+          <div style="font-weight: 800; color: #0369A1; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
             <span>📍 Tu ubicación actual</span>
           </div>
-          <div style="color: #cbd5e1; font-size: 12px; margin-bottom: 4px;">
+          <div style="color: #44403C; font-size: 12px; margin-bottom: 4px;">
             Obtenida vía GPS / Red del navegador.
           </div>
-          <div style="font-family: 'Chivo Mono', monospace; font-size: 11px; color: #94a3b8;">
+          <div style="font-family: 'Chivo Mono', monospace; font-size: 11px; color: #78716C;">
             Precisión: ±${Math.round(accuracy)} metros
           </div>
         </div>
@@ -211,8 +211,8 @@
     } else {
       userAccuracyCircle = L.circle([lat, lng], {
         radius: accuracy,
-        color: '#0284c7',
-        fillColor: '#38bdf8',
+        color: '#1D4ED8',
+        fillColor: '#0369A1',
         fillOpacity: 0.12,
         weight: 1.5,
         dashArray: '4, 4'
@@ -319,7 +319,7 @@
   // ── Búsqueda de zonas (demo) ──────────────────────────────────────────────
   const zoneSearch    = document.getElementById('zoneSearch');
   const suggestions   = document.getElementById('searchSuggestions');
-  const DEMO_ZONAS    = ['Chapinero', 'Teusaquillo', 'La Candelaria', 'Zona Rosa', 'Usaquén', 'Kennedy', 'Suba', 'Engativá'];
+  const DEMO_ZONAS    = ['Cabecera del Llano', 'San Francisco', 'Real de Minas', 'Provenza', 'Sotomayor', 'La Concordia', 'García Rovira', 'Mutis'];
 
   if (zoneSearch && suggestions) {
     zoneSearch.addEventListener('input', () => {
@@ -375,7 +375,7 @@
 
       const sub = document.querySelector('.page-subtitle');
       if (sub) {
-        sub.innerHTML = `Bienvenido, <strong>${user.nombre || 'Administrador'}</strong> · <span style="color:#38bdf8; font-weight:700;">Sesión de Administrador</span>`;
+        sub.innerHTML = `Bienvenido, <strong>${user.nombre || 'Administrador'}</strong> · <span style="color:#0369A1; font-weight:700;">Sesión de Administrador</span>`;
       }
     }
   } catch (_) {}

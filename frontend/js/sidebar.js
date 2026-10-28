@@ -76,7 +76,7 @@
       if (roleEl) {
         if (isAdmin) {
           roleEl.textContent = '🛡️ Administrador General';
-          roleEl.style.color = '#38bdf8';
+          roleEl.style.color = '#00E5FF';
           roleEl.style.fontWeight = '600';
         } else {
           roleEl.textContent = user.rol ? `Rol: ${user.rol}` : (user.correo || 'Usuario Registrado');
@@ -84,7 +84,7 @@
       }
       if (avatarEl && user.nombre) {
         if (isAdmin) {
-          avatarEl.style.background = 'linear-gradient(135deg, #0284c7, #38bdf8)';
+          avatarEl.style.background = 'linear-gradient(135deg, #1d4ed8, #3B82F6)';
           avatarEl.style.color = '#ffffff';
         }
         const parts = user.nombre.trim().split(/\s+/);
