@@ -56,6 +56,8 @@
 
   // ── Inicializar mapa Leaflet ──────────────────────────────────────────────
   const mapEl = document.getElementById('fullMap');
+  let userMarker = null;
+  let userAccuracyCircle = null;
 
   if (mapEl && typeof L !== 'undefined') {
     try {
@@ -150,6 +152,195 @@
     detailClose.addEventListener('click', () => {
       detailPanel.hidden = true;
     });
+  }
+
+  // ── Geolocalización del Usuario en Mapa Completo ─────────────────────────
+  const btnLocateMapa     = document.getElementById('btnGeolocalizarMapa');
+  const geoCardMapa       = document.getElementById('geoCardMapa');
+  const geoStatusDotMapa  = document.getElementById('geoStatusDotMapa');
+  const geoStatusPillMapa = document.getElementById('geoStatusPillMapa');
+  const geoMessageMapa    = document.getElementById('geoMessageMapa');
+  const geoDataGridMapa   = document.getElementById('geoDataGridMapa');
+  const geoLatMapa        = document.getElementById('geoLatMapa');
+  const geoLngMapa        = document.getElementById('geoLngMapa');
+  const geoAccuracyMapa   = document.getElementById('geoAccuracyMapa');
+  const geoStateTextMapa  = document.getElementById('geoStateTextMapa');
+  const btnCloseGeoMapa   = document.getElementById('btnCloseGeoCardMapa');
+
+  if (btnCloseGeoMapa && geoCardMapa) {
+    btnCloseGeoMapa.addEventListener('click', () => {
+      geoCardMapa.hidden = true;
+    });
+  }
+
+  if (btnLocateMapa) {
+    btnLocateMapa.addEventListener('click', () => {
+      solicitarGeolocalizacionMapa();
+    });
+  }
+
+  function solicitarGeolocalizacionMapa() {
+    if (!navigator.geolocation) {
+      mostrarErrorGeoMapa('Tu navegador no soporta la API de geolocalización.');
+      return;
+    }
+
+    if (!map) {
+      mostrarErrorGeoMapa('El mapa no está disponible en este momento.');
+      return;
+    }
+
+    if (geoCardMapa) geoCardMapa.hidden = false;
+    if (btnLocateMapa) btnLocateMapa.classList.add('is-loading');
+
+    actualizarEstadoVisualMapa({
+      dotClass: 'active',
+      pillClass: 'pending',
+      pillText: 'Localizando...',
+      stateText: 'Solicitando coordenadas...',
+      mostrarGrid: false,
+      msgTipo: 'info',
+      msgTexto: 'Solicitando acceso a tu ubicación... Responde al permiso del navegador si aparece.'
+    });
+
+    const opciones = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      onGeoSuccessMapa,
+      onGeoErrorMapa,
+      opciones
+    );
+  }
+
+  function onGeoSuccessMapa(position) {
+    if (btnLocateMapa) btnLocateMapa.classList.remove('is-loading');
+
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    const accuracy = position.coords.accuracy;
+
+    map.setView([lat, lng], 16, { animate: true });
+
+    const userIcon = L.divIcon({
+      className: 'custom-user-leaflet-icon',
+      html: `
+        <div class="user-location-marker" title="Tu ubicación actual">
+          <div class="user-marker-pulse"></div>
+          <div class="user-marker-core"></div>
+        </div>
+      `,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    });
+
+    if (userMarker) {
+      userMarker.setLatLng([lat, lng]);
+    } else {
+      userMarker = L.marker([lat, lng], {
+        icon: userIcon,
+        zIndexOffset: 1000
+      }).addTo(map);
+
+      userMarker.bindPopup(`
+        <div style="font-family: Archivo, sans-serif; font-size: 13px; max-width: 220px;">
+          <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px;">📍 Tu ubicación actual</div>
+          <div style="color: #cbd5e1; font-size: 12px; margin-bottom: 4px;">Obtenida vía GPS / Red.</div>
+          <div style="font-family: 'Chivo Mono', monospace; font-size: 11px; color: #94a3b8;">
+            Precisión: ±${Math.round(accuracy)} m
+          </div>
+        </div>
+      `);
+    }
+
+    if (userAccuracyCircle) {
+      userAccuracyCircle.setLatLng([lat, lng]);
+      userAccuracyCircle.setRadius(accuracy);
+    } else {
+      userAccuracyCircle = L.circle([lat, lng], {
+        radius: accuracy,
+        color: '#0284c7',
+        fillColor: '#38bdf8',
+        fillOpacity: 0.12,
+        weight: 1.5,
+        dashArray: '4, 4'
+      }).addTo(map);
+    }
+
+    userMarker.openPopup();
+
+    if (geoLatMapa) geoLatMapa.textContent = lat.toFixed(6);
+    if (geoLngMapa) geoLngMapa.textContent = lng.toFixed(6);
+    if (geoAccuracyMapa) geoAccuracyMapa.textContent = `± ${Math.round(accuracy)} m`;
+    if (geoStateTextMapa) geoStateTextMapa.textContent = 'Ubicación activa';
+
+    actualizarEstadoVisualMapa({
+      dotClass: 'success',
+      pillClass: 'success',
+      pillText: 'Ubicado',
+      stateText: 'Ubicación confirmada',
+      mostrarGrid: true,
+      msgTipo: 'success',
+      msgTexto: `Ubicación obtenida con éxito. Mapa centrado.`
+    });
+  }
+
+  function onGeoErrorMapa(error) {
+    if (btnLocateMapa) btnLocateMapa.classList.remove('is-loading');
+
+    let mensaje = '';
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        mensaje = 'Permiso denegado: Has bloqueado el acceso a la ubicación. Para activarlo, concede el permiso en la barra del navegador.';
+        break;
+      case error.POSITION_UNAVAILABLE:
+        mensaje = 'Ubicación no disponible: La señal no pudo determinar tus coordenadas actuales.';
+        break;
+      case error.TIMEOUT:
+        mensaje = 'Tiempo de espera agotado al intentar obtener tu ubicación.';
+        break;
+      default:
+        mensaje = `Error al obtener ubicación (${error.message || 'Desconocido'}).`;
+        break;
+    }
+
+    mostrarErrorGeoMapa(mensaje);
+  }
+
+  function mostrarErrorGeoMapa(msg) {
+    actualizarEstadoVisualMapa({
+      dotClass: 'error',
+      pillClass: 'error',
+      pillText: 'Error',
+      stateText: 'No disponible',
+      mostrarGrid: false,
+      msgTipo: 'error',
+      msgTexto: msg
+    });
+  }
+
+  function actualizarEstadoVisualMapa(config) {
+    if (geoStatusDotMapa) {
+      geoStatusDotMapa.className = `geo-status-dot ${config.dotClass}`;
+    }
+    if (geoStatusPillMapa) {
+      geoStatusPillMapa.className = `geo-status-pill ${config.pillClass}`;
+      geoStatusPillMapa.textContent = config.pillText;
+    }
+    if (geoStateTextMapa) {
+      geoStateTextMapa.textContent = config.stateText;
+    }
+    if (geoMessageMapa) {
+      geoMessageMapa.className = `geo-card-message ${config.msgTipo}`;
+      geoMessageMapa.textContent = config.msgTexto;
+      geoMessageMapa.hidden = false;
+    }
+    if (geoDataGridMapa) {
+      geoDataGridMapa.hidden = !config.mostrarGrid;
+    }
   }
 
 })();

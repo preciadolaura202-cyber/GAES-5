@@ -69,6 +69,15 @@
         </div>
       </div>
       <div class="page-header-right">
+        <!-- Botón de geolocalización -->
+        <button type="button" id="btnGeolocalizarMapa" class="btn-locate" title="Centrar mapa en mi ubicación">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 2v3m0 14v3M2 12h3m14 0h3"></path>
+            <circle cx="12" cy="12" r="8"></circle>
+          </svg>
+          <span>Mi ubicación</span>
+        </button>
         <!-- Filtros de categoría -->
         <div class="cat-filter-row" id="catFilters" role="group" aria-label="Filtrar por categoría">
           <button class="cat-filter-btn active" data-cat="all">Todas</button>
@@ -94,6 +103,37 @@
           <p>No se pudo cargar el mapa</p>
           <p class="map-fallback-sub">Verifica tu conexión a internet (OpenStreetMap/Leaflet) y recarga la página.</p>
           <button class="btn-accent-sm" onclick="location.reload()">Recargar</button>
+        </div>
+      </div>
+
+      <!-- Panel flotante de geolocalización en mapa -->
+      <div class="geo-status-card geo-float-panel" id="geoCardMapa" hidden aria-live="polite">
+        <div class="geo-card-header">
+          <div class="geo-card-title-group">
+            <span class="geo-status-dot" id="geoStatusDotMapa" aria-hidden="true"></span>
+            <strong class="geo-card-title">Mi Ubicación</strong>
+          </div>
+          <span class="geo-status-pill" id="geoStatusPillMapa">Inactivo</span>
+          <button type="button" id="btnCloseGeoCardMapa" class="geo-close-btn" aria-label="Cerrar panel de ubicación">✕</button>
+        </div>
+        <div class="geo-card-message" id="geoMessageMapa" hidden></div>
+        <div class="geo-data-grid" id="geoDataGridMapa" hidden>
+          <div class="geo-data-item">
+            <span class="geo-data-label">Latitud</span>
+            <span class="geo-data-value" id="geoLatMapa">—</span>
+          </div>
+          <div class="geo-data-item">
+            <span class="geo-data-label">Longitud</span>
+            <span class="geo-data-value" id="geoLngMapa">—</span>
+          </div>
+          <div class="geo-data-item">
+            <span class="geo-data-label">Precisión aprox.</span>
+            <span class="geo-data-value" id="geoAccuracyMapa">—</span>
+          </div>
+          <div class="geo-data-item">
+            <span class="geo-data-label">Estado</span>
+            <span class="geo-data-value text-accent" id="geoStateTextMapa">—</span>
+          </div>
         </div>
       </div>
 

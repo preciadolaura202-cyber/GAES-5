@@ -233,8 +233,56 @@
             </svg>
             Mapa de incidentes
           </h2>
-          <a href="mapa.html" class="btn-panel-action">Ver mapa completo →</a>
+          <div class="panel-header-actions">
+            <button type="button" id="btnGeolocalizar" class="btn-locate" title="Obtener mi ubicación actual">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 2v3m0 14v3M2 12h3m14 0h3"></path>
+                <circle cx="12" cy="12" r="8"></circle>
+              </svg>
+              <span>Mi ubicación</span>
+            </button>
+            <a href="mapa.html" class="btn-panel-action">Ver mapa completo →</a>
+          </div>
         </div>
+
+        <!-- Tarjeta de estado de geolocalización -->
+        <div id="geoCard" class="geo-status-card" hidden aria-live="polite">
+          <div class="geo-card-header">
+            <div class="geo-card-title-group">
+              <span class="geo-status-dot" id="geoStatusDot" aria-hidden="true"></span>
+              <strong class="geo-card-title">Geolocalización del usuario</strong>
+            </div>
+            <span class="geo-status-pill" id="geoStatusPill">Inactivo</span>
+            <button type="button" id="btnCloseGeoCard" class="geo-close-btn" aria-label="Cerrar panel de ubicación">✕</button>
+          </div>
+
+          <div class="geo-card-message" id="geoMessage" hidden></div>
+
+          <div class="geo-data-grid" id="geoDataGrid" hidden>
+            <div class="geo-data-item">
+              <span class="geo-data-label">Latitud</span>
+              <span class="geo-data-value" id="geoLat">—</span>
+            </div>
+            <div class="geo-data-item">
+              <span class="geo-data-label">Longitud</span>
+              <span class="geo-data-value" id="geoLng">—</span>
+            </div>
+            <div class="geo-data-item">
+              <span class="geo-data-label">Precisión aprox.</span>
+              <span class="geo-data-value" id="geoAccuracy">—</span>
+            </div>
+            <div class="geo-data-item">
+              <span class="geo-data-label">Estado</span>
+              <span class="geo-data-value text-accent" id="geoStateText">—</span>
+            </div>
+          </div>
+          <p class="geo-footnote">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Las coordenadas se procesan exclusivamente de forma local en tu navegador.
+          </p>
+        </div>
+
         <div class="map-container" id="dashMap" aria-label="Mapa interactivo de reportes de demostración">
           <!-- Leaflet se inicializa aquí -->
           <div class="map-fallback" id="mapFallback" hidden>

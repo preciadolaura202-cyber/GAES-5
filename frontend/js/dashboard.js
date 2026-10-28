@@ -38,9 +38,13 @@
 
   // ── Mapa del dashboard ────────────────────────────────────────────────────
   const mapEl = document.getElementById('dashMap');
+  let map = null;
+  let userMarker = null;
+  let userAccuracyCircle = null;
+
   if (mapEl && typeof L !== 'undefined') {
     try {
-      const map = L.map('dashMap', {
+      map = L.map('dashMap', {
         center: [MAPA_CENTRO.lat, MAPA_CENTRO.lng],
         zoom: MAPA_CENTRO.zoom - 1,
         zoomControl: true,
@@ -83,6 +87,205 @@
     }
   } else if (mapEl) {
     showMapFallback('dashMap', 'mapFallback');
+  }
+
+  // ── Geolocalización del Usuario ─────────────────────────────────────────
+  const btnLocate      = document.getElementById('btnGeolocalizar');
+  const geoCard        = document.getElementById('geoCard');
+  const geoStatusDot   = document.getElementById('geoStatusDot');
+  const geoStatusPill  = document.getElementById('geoStatusPill');
+  const geoMessage     = document.getElementById('geoMessage');
+  const geoDataGrid    = document.getElementById('geoDataGrid');
+  const geoLat         = document.getElementById('geoLat');
+  const geoLng         = document.getElementById('geoLng');
+  const geoAccuracy    = document.getElementById('geoAccuracy');
+  const geoStateText   = document.getElementById('geoStateText');
+  const btnCloseGeo    = document.getElementById('btnCloseGeoCard');
+
+  if (btnCloseGeo && geoCard) {
+    btnCloseGeo.addEventListener('click', () => {
+      geoCard.hidden = true;
+    });
+  }
+
+  if (btnLocate) {
+    btnLocate.addEventListener('click', () => {
+      solicitarGeolocalizacion();
+    });
+  }
+
+  function solicitarGeolocalizacion() {
+    if (!navigator.geolocation) {
+      mostrarErrorGeo('Tu navegador no soporta la API de geolocalización.');
+      return;
+    }
+
+    if (!map) {
+      mostrarErrorGeo('El mapa no está disponible en este momento.');
+      return;
+    }
+
+    // Estado inicial: Solicitando / Pendiente
+    if (geoCard) geoCard.hidden = false;
+    if (btnLocate) btnLocate.classList.add('is-loading');
+
+    actualizarEstadoVisual({
+      dotClass: 'active',
+      pillClass: 'pending',
+      pillText: 'Localizando...',
+      stateText: 'Solicitando coordenadas...',
+      mostrarGrid: false,
+      msgTipo: 'info',
+      msgTexto: 'Solicitando acceso a tu ubicación... Por favor responde a la solicitud del navegador si aparece.'
+    });
+
+    const opciones = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      onGeoSuccess,
+      onGeoError,
+      opciones
+    );
+  }
+
+  function onGeoSuccess(position) {
+    if (btnLocate) btnLocate.classList.remove('is-loading');
+
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    const accuracy = position.coords.accuracy;
+
+    // Centrar mapa de Leaflet
+    map.setView([lat, lng], 15, { animate: true });
+
+    // Crear icono personalizado distintivo para el usuario (azul cian pulsante)
+    const userIcon = L.divIcon({
+      className: 'custom-user-leaflet-icon',
+      html: `
+        <div class="user-location-marker" title="Tu ubicación actual">
+          <div class="user-marker-pulse"></div>
+          <div class="user-marker-core"></div>
+        </div>
+      `,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    });
+
+    // Actualizar o crear marcador
+    if (userMarker) {
+      userMarker.setLatLng([lat, lng]);
+    } else {
+      userMarker = L.marker([lat, lng], {
+        icon: userIcon,
+        zIndexOffset: 1000
+      }).addTo(map);
+
+      userMarker.bindPopup(`
+        <div style="font-family: Archivo, sans-serif; font-size: 13px; max-width: 220px;">
+          <div style="font-weight: 800; color: #38bdf8; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+            <span>📍 Tu ubicación actual</span>
+          </div>
+          <div style="color: #cbd5e1; font-size: 12px; margin-bottom: 4px;">
+            Obtenida vía GPS / Red del navegador.
+          </div>
+          <div style="font-family: 'Chivo Mono', monospace; font-size: 11px; color: #94a3b8;">
+            Precisión: ±${Math.round(accuracy)} metros
+          </div>
+        </div>
+      `);
+    }
+
+    // Círculo de precisión
+    if (userAccuracyCircle) {
+      userAccuracyCircle.setLatLng([lat, lng]);
+      userAccuracyCircle.setRadius(accuracy);
+    } else {
+      userAccuracyCircle = L.circle([lat, lng], {
+        radius: accuracy,
+        color: '#0284c7',
+        fillColor: '#38bdf8',
+        fillOpacity: 0.12,
+        weight: 1.5,
+        dashArray: '4, 4'
+      }).addTo(map);
+    }
+
+    userMarker.openPopup();
+
+    // Actualizar panel UI con al menos 6 decimales
+    if (geoLat) geoLat.textContent = lat.toFixed(6);
+    if (geoLng) geoLng.textContent = lng.toFixed(6);
+    if (geoAccuracy) geoAccuracy.textContent = `± ${Math.round(accuracy)} m`;
+    if (geoStateText) geoStateText.textContent = 'Ubicación activa';
+
+    actualizarEstadoVisual({
+      dotClass: 'success',
+      pillClass: 'success',
+      pillText: 'Ubicado',
+      stateText: 'Ubicación confirmada',
+      mostrarGrid: true,
+      msgTipo: 'success',
+      msgTexto: `Ubicación obtenida con éxito. Mapa centrado en tus coordenadas.`
+    });
+  }
+
+  function onGeoError(error) {
+    if (btnLocate) btnLocate.classList.remove('is-loading');
+
+    let mensaje = '';
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        mensaje = 'Permiso denegado: Has bloqueado el acceso a la ubicación en el navegador. Para activarlo, permite la ubicación en el candado o configuración del sitio.';
+        break;
+      case error.POSITION_UNAVAILABLE:
+        mensaje = 'Ubicación no disponible: La señal de GPS o red no pudo determinar tus coordenadas actuales.';
+        break;
+      case error.TIMEOUT:
+        mensaje = 'Tiempo de espera agotado: Se superó el límite de tiempo para obtener tu ubicación. Por favor, intenta de nuevo.';
+        break;
+      default:
+        mensaje = `Error desconocido al obtener ubicación (${error.message || 'Sin detalles'}).`;
+        break;
+    }
+
+    mostrarErrorGeo(mensaje);
+  }
+
+  function mostrarErrorGeo(msg) {
+    actualizarEstadoVisual({
+      dotClass: 'error',
+      pillClass: 'error',
+      pillText: 'Error',
+      stateText: 'No disponible',
+      mostrarGrid: false,
+      msgTipo: 'error',
+      msgTexto: msg
+    });
+  }
+
+  function actualizarEstadoVisual(config) {
+    if (geoStatusDot) {
+      geoStatusDot.className = `geo-status-dot ${config.dotClass}`;
+    }
+    if (geoStatusPill) {
+      geoStatusPill.className = `geo-status-pill ${config.pillClass}`;
+      geoStatusPill.textContent = config.pillText;
+    }
+    if (geoStateText) {
+      geoStateText.textContent = config.stateText;
+    }
+    if (geoMessage) {
+      geoMessage.className = `geo-card-message ${config.msgTipo}`;
+      geoMessage.textContent = config.msgTexto;
+      geoMessage.hidden = false;
+    }
+    if (geoDataGrid) {
+      geoDataGrid.hidden = !config.mostrarGrid;
+    }
   }
 
   // ── Reportes recientes ────────────────────────────────────────────────────
