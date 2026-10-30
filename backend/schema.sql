@@ -49,5 +49,5 @@ ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
 -- Usuario Administrador por defecto (clave: admin1234)
 INSERT INTO usuarios (nombre, correo, clave_hash, rol)
-SELECT 'Administrador General', 'admin@seguria.org', '$2b$10$vN0oVwGgJ5mF2n3A8k6mEetJp6R5eT6dM1V8mZ4o9Y7wX2qL1aK0e', 'administrador'
+SELECT 'Administrador General', 'admin@seguria.org', '$2b$10$2ej8hZrSAg5NJVQlF5Zw4uDQQaxoY8nGV.KAIf39ZFq6h.tD2hmYK', 'administrador'
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE correo = 'admin@seguria.org');

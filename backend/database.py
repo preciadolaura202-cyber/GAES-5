@@ -106,17 +106,21 @@ def init_database() -> bool:
                     ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
                 """, (cat,))
 
-            # Insertar usuario administrador por defecto si no existe
-            cursor.execute("SELECT id FROM usuarios WHERE correo = %s LIMIT 1;", ("admin@seguria.org",))
+            # Insertar o actualizar usuario administrador por defecto (admin@seguria.org / admin1234)
+            cursor.execute("SELECT id, clave_hash FROM usuarios WHERE correo = %s LIMIT 1;", ("admin@seguria.org",))
             admin_existente = cursor.fetchone()
+            from security import hash_password, verify_password
             if not admin_existente:
-                from security import hash_password
                 clave_admin_hash = hash_password("admin1234")
                 cursor.execute("""
                     INSERT INTO usuarios (nombre, correo, clave_hash, rol)
                     VALUES (%s, %s, %s, %s);
                 """, ("Administrador General", "admin@seguria.org", clave_admin_hash, "administrador"))
                 print("[OK] Usuario administrador registrado por defecto: admin@seguria.org / admin1234 (Rol: administrador)")
+            elif not verify_password("admin1234", admin_existente.get("clave_hash") or ""):
+                clave_admin_hash = hash_password("admin1234")
+                cursor.execute("UPDATE usuarios SET clave_hash = %s WHERE correo = %s;", (clave_admin_hash, "admin@seguria.org"))
+                print("[OK] Contraseña del usuario administrador actualizada correctamente a 'admin1234'.")
 
         conn.close()
         print(f"[OK] Base de datos '{DB_NAME}' y tablas listas en MySQL (phpMyAdmin).")
