@@ -73,9 +73,10 @@
         attributionControl: true,
       });
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · Datos de demostración · SegurIA GAES-5',
-        maxZoom: 19,
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a> · SegurIA GAES-5',
+        subdomains: 'abcd',
+        maxZoom: 20,
       }).addTo(map);
 
       // Crear marcadores
