@@ -79,6 +79,12 @@
           </svg>
           <span>Mi ubicación</span>
         </button>
+        <!-- Selector de capas IA y modos de mapa -->
+        <div class="cat-filter-row" id="layerSelector" role="group" aria-label="Modo de visualización de mapa">
+          <button class="cat-filter-btn active" data-layer="marcadores" title="Incidentes individuales reportados">📍 Incidentes</button>
+          <button class="cat-filter-btn" data-layer="zonas" title="Agrupaciones y zonas de riesgo clasificadas por IA">🛡 Zonas de Riesgo IA</button>
+          <button class="cat-filter-btn" data-layer="calor" title="Mapa de calor de densidad delictiva">🔥 Mapa de Calor</button>
+        </div>
         <!-- Filtros de categoría -->
         <div class="cat-filter-row" id="catFilters" role="group" aria-label="Filtrar por categoría">
           <button class="cat-filter-btn active" data-cat="all">Todas</button>
@@ -144,7 +150,15 @@
         <ul class="legend-float-list" id="legendFloatList" role="list">
           <!-- JS genera -->
         </ul>
-        <p class="legend-note">⚠ Datos de demostración académica</p>
+        <div class="legend-risk-group" style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;">
+          <p class="legend-title" style="margin-bottom: 6px;">Niveles de Riesgo IA</p>
+          <ul class="legend-float-list" role="list">
+            <li><span class="legend-dot" style="background:#EF4444; width:10px; height:10px; border-radius:50%; display:inline-block;" aria-hidden="true"></span> Riesgo Alto (≥70 pts)</li>
+            <li><span class="legend-dot" style="background:#F59E0B; width:10px; height:10px; border-radius:50%; display:inline-block;" aria-hidden="true"></span> Riesgo Medio (40-69 pts)</li>
+            <li><span class="legend-dot" style="background:#10B981; width:10px; height:10px; border-radius:50%; display:inline-block;" aria-hidden="true"></span> Riesgo Bajo (&lt;40 pts)</li>
+          </ul>
+        </div>
+        <p class="legend-note" style="margin-top: 8px;">🛡 Densidad histórica Bucaramanga</p>
       </div>
 
       <!-- Panel de detalle de marcador -->
@@ -181,6 +195,7 @@
     }
   </script>
   <script src="data/demo-data.js"></script>
+  <script src="vendor/leaflet/leaflet-heat.js"></script>
   <script src="js/sidebar.js"></script>
   <script src="js/mapa.js"></script>
 </body>

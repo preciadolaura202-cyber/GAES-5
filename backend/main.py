@@ -14,6 +14,7 @@ from routes.auth import router as auth_router
 from routes.categorias import router as categorias_router
 from routes.reportes import router as reportes_router
 from routes.admin import router as admin_router
+from seguria_ia.api.routes import router as ia_router
 
 load_dotenv()
 
@@ -63,6 +64,7 @@ app.include_router(auth_router)
 app.include_router(categorias_router)
 app.include_router(reportes_router)
 app.include_router(admin_router)
+app.include_router(ia_router)
 
 
 @app.get("/")
